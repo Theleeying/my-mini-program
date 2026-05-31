@@ -4,7 +4,7 @@ App({
     // 初始化云开发环境
     if (wx.cloud) {
       wx.cloud.init({
-        env: 'cloudbase-d3glfg3zf894b18e',
+        env: 'cloudbase-d3glfg3zf894b18e9',
         traceUser: true
       })
       // 获取用户 openid
