@@ -3,5 +3,8 @@ node_modules/
 unpackage/
 dist/
 
+# IDE
+.vscode/
+
 # 微信开发者工具生成的本地配置
 project.private.config.json
