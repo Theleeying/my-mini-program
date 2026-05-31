@@ -1,0 +1,34 @@
+<!--pages/common/announcement-detail/announcement-detail.wxml — 公告详情-->
+<view class="page-announcement">
+
+  <view wx:if="{{loading}}" class="empty-state">
+    <text>加载中...</text>
+  </view>
+
+  <view wx:elif="{{!item}}" class="empty-state">
+    <text>公告不存在或已删除</text>
+  </view>
+
+  <view wx:else class="detail-body">
+    <!-- 封面图 -->
+    <image
+      wx:if="{{item.image}}"
+      class="cover-img"
+      src="{{item.image}}"
+      mode="aspectFill"
+      bindtap="onPreviewImage"
+    />
+
+    <!-- 标题 -->
+    <view class="title-section">
+      <text class="title">{{item.title}}</text>
+      <text class="time" wx:if="{{item.createTime}}">{{item.createTime}}</text>
+    </view>
+
+    <!-- 正文 -->
+    <view class="content-section">
+      <text class="content">{{item.content || '暂无详细内容'}}</text>
+    </view>
+  </view>
+
+</view>

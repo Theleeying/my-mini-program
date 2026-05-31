@@ -75,3 +75,44 @@
   border: 1rpx solid var(--color-border);
   border-radius: 8rpx;
 }
+
+/* ===== 顶部 tab 切换栏 ===== */
+.tab-bar {
+  display: flex;
+  background: var(--color-white);
+  border-bottom: 1rpx solid var(--color-border);
+  padding: 0 30rpx;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 26rpx 0;
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+  border-bottom: 4rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.tab-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ===== 失物状态标签 ===== */
+.fav-status {
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+}
+
+.status-active {
+  background-color: #E8F5E9;
+  color: #4CAF50;
+}
+
+.status-done {
+  background-color: #F5F5F5;
+  color: #9E9E9E;
+}

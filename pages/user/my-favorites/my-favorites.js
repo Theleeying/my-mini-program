@@ -1,7 +1,9 @@
-// pages/user/my-favorites/my-favorites.js — 我的收藏
+// pages/user/my-favorites/my-favorites.js — 我的收藏（商品 + 失物）
 Page({
   data: {
-    list: [],
+    activeTab: 0,          // 0=商品, 1=失物
+    tabs: ['收藏的二手', '收藏的失物'],
+    list: [],              // 当前显示的列表
     loading: false
   },
 
@@ -9,13 +11,20 @@ Page({
     this.loadFavorites()
   },
 
+  onTabChange(e) {
+    const idx = e.currentTarget.dataset.index
+    this.setData({ activeTab: idx })
+    this.loadFavorites()
+  },
+
   loadFavorites() {
     const db = wx.cloud.database()
+    const itemType = this.data.activeTab === 0 ? 'goods' : 'lost_found'
 
     this.setData({ loading: true })
 
-    // 从 favorites 集合获取收藏的商品 id
     db.collection('favorites')
+      .where({ itemType })
       .orderBy('createTime', 'desc')
       .get()
       .then(res => {
@@ -24,22 +33,18 @@ Page({
           return
         }
 
-        // 获取所有收藏的商品 id
-        const goodsIds = res.data.map(item => item.goodsId)
+        const ids = [...new Set(res.data.map(r => r.itemId))]
+        const collectionName = itemType === 'goods' ? 'goods' : 'lost_found'
 
-        // 查询对应的商品信息
-        db.collection('goods')
-          .where({
-            _id: db.command.in(goodsIds)
-          })
+        db.collection(collectionName)
+          .where({ _id: db.command.in(ids) })
           .get()
-          .then(goodsRes => {
-            this.setData({ list: goodsRes.data, loading: false })
+          .then(detailRes => {
+            this.setData({ list: detailRes.data, loading: false })
           })
           .catch(err => {
-            console.error('查询商品失败：', err)
+            console.error('查询收藏详情失败：', err)
             this.setData({ list: [], loading: false })
-            wx.showToast({ title: '加载失败', icon: 'none' })
           })
       })
       .catch(err => {
@@ -51,33 +56,38 @@ Page({
   // 取消收藏
   onUnfavorite(e) {
     const { id } = e.currentTarget.dataset
+    const itemType = this.data.activeTab === 0 ? 'goods' : 'lost_found'
+
     wx.showModal({
       title: '提示',
       content: '确定要取消收藏吗？',
       success: (res) => {
-        if (res.confirm) {
-          const db = wx.cloud.database()
-          db.collection('favorites')
-            .where({ goodsId: id })
-            .remove()
-            .then(() => {
-              wx.showToast({ title: '已取消收藏', icon: 'success' })
-              this.loadFavorites()
-            })
-            .catch(err => {
-              console.error('取消收藏失败：', err)
-              wx.showToast({ title: '操作失败，请重试', icon: 'none' })
-            })
-        }
+        if (!res.confirm) return
+
+        const db = wx.cloud.database()
+        db.collection('favorites')
+          .where({ itemId: id, itemType })
+          .remove()
+          .then(() => {
+            wx.showToast({ title: '已取消收藏', icon: 'success' })
+            this.loadFavorites()
+          })
+          .catch(err => {
+            console.error('取消收藏失败：', err)
+            wx.showToast({ title: '操作失败', icon: 'none' })
+          })
       }
     })
   },
 
-  // 查看详情
+  // 查看详情 — 根据类型跳转不同页面
   onItemTap(e) {
     const { id } = e.currentTarget.dataset
+    const prefix = this.data.activeTab === 0
+      ? '/pages/secondhand/detail/detail'
+      : '/pages/lostfound/detail/detail'
     wx.navigateTo({
-      url: `/pages/secondhand/detail/detail?id=${id}`
+      url: `${prefix}?id=${id}`
     })
   },
 

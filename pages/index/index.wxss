@@ -182,3 +182,102 @@
   color: var(--color-danger);
   font-weight: 600;
 }
+
+/* ===== 收藏星标 ===== */
+.fav-star {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 12rpx;
+  font-size: 38rpx;
+}
+
+/* ===== 骨架屏 ===== */
+.skeleton {
+  padding: 0;
+}
+
+.sk-banner {
+  height: 320rpx;
+  background: linear-gradient(90deg, #e8e8e8 25%, #f0f0f0 50%, #e8e8e8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.sk-quick-grid {
+  display: flex;
+  padding: 30rpx 20rpx;
+  justify-content: space-around;
+}
+
+.sk-quick-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sk-circle {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #e8e8e8 25%, #f0f0f0 50%, #e8e8e8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.sk-text-short {
+  width: 80rpx;
+  height: 24rpx;
+  border-radius: 6rpx;
+  margin-top: 14rpx;
+  background: linear-gradient(90deg, #e8e8e8 25%, #f0f0f0 50%, #e8e8e8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.sk-card {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  margin: 0 20rpx 16rpx;
+  background: #fff;
+  border-radius: 16rpx;
+}
+
+.sk-thumb {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+  background: linear-gradient(90deg, #e8e8e8 25%, #f0f0f0 50%, #e8e8e8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.sk-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.sk-line {
+  height: 24rpx;
+  border-radius: 6rpx;
+  background: linear-gradient(90deg, #e8e8e8 25%, #f0f0f0 50%, #e8e8e8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.sk-line.w80 { width: 80%; }
+.sk-line.w60 { width: 60%; }
+.sk-line.w40 { width: 40%; }
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

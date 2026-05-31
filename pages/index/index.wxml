@@ -16,6 +16,28 @@
     </view>
   </view>
 
+  <!-- 骨架屏 -->
+  <view wx:if="{{loading}}" class="skeleton">
+    <view class="sk-banner"></view>
+    <view class="sk-quick-grid">
+      <view wx:for="{{[1,2,3,4]}}" wx:key="*this" class="sk-quick-item">
+        <view class="sk-circle"></view>
+        <view class="sk-text-short"></view>
+      </view>
+    </view>
+    <view class="section-title">🔥 热门推荐</view>
+    <view wx:for="{{[1,2,3,4]}}" wx:key="*this" class="sk-card">
+      <view class="sk-thumb"></view>
+      <view class="sk-lines">
+        <view class="sk-line w80"></view>
+        <view class="sk-line w60"></view>
+        <view class="sk-line w40"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 实际内容（非骨架屏） -->
+  <view wx:else>
   <!-- 轮播图 -->
   <view class="banner-section">
     <swiper
@@ -28,7 +50,7 @@
       interval="4000"
     >
       <block wx:for="{{banners}}" wx:key="_id">
-        <swiper-item>
+        <swiper-item data-id="{{item._id}}" bindtap="onBannerTap">
           <image class="banner-image" src="{{item.image}}" mode="aspectFill" />
           <view class="banner-title">{{item.title}}</view>
         </swiper-item>
@@ -87,8 +109,18 @@
             <text wx:if="{{item.__type === 'goods' && item.price}}" class="hot-price">¥{{item.price}}</text>
           </view>
         </view>
+        <!-- 收藏星标 -->
+        <view
+          class="fav-star"
+          data-id="{{item._id}}"
+          data-type="{{item.__type}}"
+          catchtap="onToggleFavorite"
+        >
+          <text>{{item.isFavorited ? '⭐' : '☆'}}</text>
+        </view>
       </view>
     </view>
+  </view>
   </view>
 
 </view>
