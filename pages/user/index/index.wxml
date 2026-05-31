@@ -13,22 +13,13 @@
     </view>
 
     <!-- 未登录状态 -->
-    <view wx:else class="user-login-area">
-      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-        <image class="avatar-default" src="{{avatarUrl || '/images/default-avatar.png'}}" mode="cover" />
-        <text class="avatar-tip">点击设置头像</text>
-      </button>
-      <view class="nickname-row">
-        <input
-          class="nickname-input"
-          type="nickname"
-          placeholder="请输入昵称"
-          value="{{nickName}}"
-          bindinput="onNicknameInput"
-        />
+    <view wx:else class="user-login" bindtap="showLoginModal">
+      <image class="avatar-default" src="/images/default-avatar.png" mode="cover" />
+      <view class="user-text">
+        <text class="login-tip">点击登录</text>
+        <text class="login-desc">授权微信信息，畅享校园服务</text>
       </view>
-      <button class="login-btn" bindtap="onSaveProfile" loading="{{saving}}">保存并登录</button>
-      <text class="login-notice">头像和昵称仅用于校内展示</text>
+      <text class="arrow">›</text>
     </view>
   </view>
 
@@ -49,6 +40,58 @@
         </view>
       </view>
       <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 登录授权弹窗 -->
+  <view wx:if="{{showModal}}" class="modal-mask" bindtap="hideLoginModal"></view>
+  <view wx:if="{{showModal}}" class="login-modal">
+    <view class="modal-header">
+      <text class="modal-title">微信授权登录</text>
+      <text class="modal-close" bindtap="hideLoginModal">✕</text>
+    </view>
+
+    <view class="modal-body">
+      <text class="modal-desc">授权获取你的微信头像和昵称，用于校内展示</text>
+
+      <!-- 首选：getUserInfo 按钮，触发微信原生授权弹窗 -->
+      <button
+        class="btn-wechat-login"
+        open-type="getUserInfo"
+        bindgetuserinfo="onWechatAuth"
+      >
+        <text class="wechat-icon">🟢</text>
+        <text>微信一键登录</text>
+      </button>
+
+      <text class="modal-divider">—— 或其他方式 ——</text>
+
+      <view class="manual-section">
+        <text class="manual-label">头像</text>
+        <button class="avatar-picker-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <image
+            class="avatar-preview"
+            src="{{tempAvatarUrl || '/images/default-avatar.png'}}"
+            mode="cover"
+          />
+          <text class="avatar-picker-tip">点击选择</text>
+        </button>
+      </view>
+
+      <view class="manual-section">
+        <text class="manual-label">昵称</text>
+        <input
+          class="nickname-field"
+          type="nickname"
+          placeholder="请输入昵称"
+          value="{{tempNickName}}"
+          bindinput="onNicknameInput"
+        />
+      </view>
+    </view>
+
+    <view class="modal-footer">
+      <button class="btn-confirm" bindtap="onManualLogin" loading="{{saving}}">确认登录</button>
     </view>
   </view>
 
