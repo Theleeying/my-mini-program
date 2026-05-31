@@ -29,23 +29,33 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "images/tab/home.png",
+        "selectedIconPath": "images/tab/home-active.png"
       },
       {
         "pagePath": "pages/secondhand/list/list",
-        "text": "二手"
+        "text": "二手",
+        "iconPath": "images/tab/shop.png",
+        "selectedIconPath": "images/tab/shop-active.png"
       },
       {
         "pagePath": "pages/lostfound/list/list",
-        "text": "失物"
+        "text": "失物",
+        "iconPath": "images/tab/find.png",
+        "selectedIconPath": "images/tab/find-active.png"
       },
       {
         "pagePath": "pages/studyroom/index/index",
-        "text": "自习"
+        "text": "自习",
+        "iconPath": "images/tab/study.png",
+        "selectedIconPath": "images/tab/study-active.png"
       },
       {
         "pagePath": "pages/user/index/index",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "images/tab/user.png",
+        "selectedIconPath": "images/tab/user-active.png"
       }
     ]
   },

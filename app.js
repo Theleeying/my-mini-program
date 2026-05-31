@@ -4,7 +4,7 @@ App({
     // 初始化云开发环境
     if (wx.cloud) {
       wx.cloud.init({
-        env: 'cloudbase-d3glfg3zf894b18e',
+        env: 'cloudbase-d3glfg3zf894b18e9',
         traceUser: true
       })
       // 获取用户 openid
@@ -20,13 +20,14 @@ App({
         this.globalData.openid = res.result.openid
       },
       fail: err => {
-        console.error('获取 openid 失败：', err)
+        console.warn('[app] 获取 openid 失败（云函数可能未部署）：', err.errMsg || err)
       }
     })
   },
 
   globalData: {
     openid: null,
-    userInfo: null
+    userInfo: null,
+    searchKeyword: ''
   }
 })

@@ -3,7 +3,6 @@ Page({
   data: {
     userInfo: null,
     hasLogin: false,
-    // 菜单列表
     menuList: [
       { icon: '📋', title: '我的发布', desc: '查看我发布的二手和失物信息', url: '/pages/user/my-publish/my-publish' },
       { icon: '⭐', title: '我的收藏', desc: '收藏的二手商品', url: '/pages/user/my-favorites/my-favorites' },
@@ -15,105 +14,79 @@ Page({
   },
 
   onLoad() {
-    this.checkLoginStatus()
+    this.checkLogin()
   },
 
   onShow() {
-    this.checkLoginStatus()
+    this.checkLogin()
   },
 
-  // 检查登录状态
-  checkLoginStatus() {
+  checkLogin() {
     const app = getApp()
-    const userInfo = app.globalData.userInfo
-    this.setData({
-      userInfo: userInfo,
-      hasLogin: !!userInfo
+    const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo')
+    if (userInfo) {
+      app.globalData.userInfo = userInfo
+      this.setData({ userInfo, hasLogin: true })
+    }
+  },
+
+  // 微信一键授权登录
+  onWechatAuth(e) {
+    if (e.detail.errMsg !== 'getUserInfo:ok') {
+      wx.showToast({ title: '已取消授权', icon: 'none' })
+      return
+    }
+
+    const { nickName, avatarUrl } = e.detail.userInfo
+    const app = getApp()
+
+    // 确保有 openid
+    const ensureOpenid = () =>
+      app.globalData.openid
+        ? Promise.resolve()
+        : wx.cloud.callFunction({ name: 'login' }).then(res => {
+            app.globalData.openid = res.result.openid
+          })
+
+    ensureOpenid().then(() => {
+      const db = wx.cloud.database()
+
+      return db.collection('users').where({ _openid: app.globalData.openid }).get().then(rs => {
+        if (rs.data.length === 0) {
+          return db.collection('users').add({
+            data: {
+              nickName: nickName,
+              avatarUrl: avatarUrl,
+              createTime: db.serverDate()
+            }
+          })
+        } else {
+          return db.collection('users').doc(rs.data[0]._id).update({
+            data: { nickName: nickName, avatarUrl: avatarUrl }
+          })
+        }
+      })
+    }).then(() => {
+      const userInfo = { nickName, avatarUrl }
+      app.globalData.userInfo = userInfo
+      wx.setStorageSync('userInfo', userInfo)
+      this.setData({ userInfo, hasLogin: true })
+      wx.showToast({ title: '登录成功', icon: 'success' })
+    }).catch(err => {
+      console.error('登录失败：', err)
+      wx.showToast({ title: '网络异常，请重试', icon: 'none' })
     })
   },
 
-  // 微信授权登录
-  onLogin() {
-    const app = getApp()
-
-    // 确保 openid 已获取
-    const doLogin = () => {
-      wx.getUserProfile({
-        desc: '用于完善个人资料',
-        success: (res) => {
-          const userInfo = res.userInfo
-          // 保存到全局
-          app.globalData.userInfo = userInfo
-          this.setData({ userInfo, hasLogin: true })
-
-          // 写入云数据库
-          const db = wx.cloud.database()
-          const openid = app.globalData.openid
-          if (!openid) {
-            console.warn('openid 未就绪，跳过写库')
-            return
-          }
-
-          db.collection('users').where({
-            _openid: openid
-          }).get().then(rs => {
-            if (rs.data.length === 0) {
-              // 新用户，创建记录
-              db.collection('users').add({
-                data: {
-                  nickName: userInfo.nickName,
-                  avatarUrl: userInfo.avatarUrl,
-                  createTime: db.serverDate()
-                }
-              })
-            } else {
-              // 老用户，更新信息
-              db.collection('users').doc(rs.data[0]._id).update({
-                data: {
-                  nickName: userInfo.nickName,
-                  avatarUrl: userInfo.avatarUrl
-                }
-              })
-            }
-          })
-
-          wx.showToast({ title: '登录成功', icon: 'success' })
-        },
-        fail: () => {
-          wx.showToast({ title: '登录已取消', icon: 'none' })
-        }
-      })
-    }
-
-    // 如果 openid 未就绪，先主动获取
-    if (!app.globalData.openid) {
-      wx.cloud.callFunction({
-        name: 'login',
-        success: (res) => {
-          app.globalData.openid = res.result.openid
-          doLogin()
-        },
-        fail: () => {
-          wx.showToast({ title: '网络异常，请重试', icon: 'none' })
-        }
-      })
-    } else {
-      doLogin()
-    }
-  },
-
-  // 菜单点击
+  // 菜单跳转
   onMenuTap(e) {
     const { url } = e.currentTarget.dataset
     if (url) {
       wx.navigateTo({
         url,
-        fail: () => {
-          wx.switchTab({ url })
-        }
+        fail: () => wx.switchTab({ url })
       })
     } else {
-      // 联系客服
       wx.showModal({
         title: '联系客服',
         content: '请通过微信搜索添加客服，或发送邮件至 support@xiaoyitong.com',

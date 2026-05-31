@@ -54,6 +54,7 @@ Page({
         if (res.confirm) {
           const app = getApp()
           app.globalData.userInfo = null
+          wx.removeStorageSync('userInfo')
           wx.reLaunch({
             url: '/pages/user/index/index'
           })

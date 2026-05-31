@@ -16,9 +16,21 @@
   align-items: center;
 }
 
-.user-login {
+/* 微信一键登录按钮 - 去button默认样式 */
+.wechat-login-btn {
   display: flex;
   align-items: center;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  text-align: left;
+  line-height: 1;
+}
+
+.wechat-login-btn::after {
+  border: none;
 }
 
 .avatar {
@@ -49,7 +61,7 @@
 }
 
 .login-tip {
-  font-size: 36rpx;
+  font-size: 34rpx;
   font-weight: 600;
   color: var(--color-white);
   display: block;

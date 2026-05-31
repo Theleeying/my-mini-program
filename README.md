@@ -42,7 +42,7 @@
 **方式二：浏览器直接打开**
 - 打开 https://mp.weixin.qq.com → 微信扫码登录
 - 左侧菜单 → 云服务 → 云开发 → 进入控制台
-- 或直接访问：https://tcb.cloud.tencent.com/env/overview?envId=cloudbase-d3glfg3zf894b18e
+- 或直接访问：https://tcb.cloud.tencent.com/env/overview?envId=cloudbase-d3glfg3zf894b18e9
 
 ---
 
