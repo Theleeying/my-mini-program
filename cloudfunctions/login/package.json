@@ -1,0 +1,5 @@
+{
+  "name": "login",
+  "version": "1.0.0",
+  "description": "获取用户 openid 的云函数"
+}
