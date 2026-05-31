@@ -61,19 +61,21 @@ Page({
 
     return Promise.all([goodsPromise, lostPromise, favPromise])
       .then(([goodsRes, lostRes, favRes]) => {
-        const favSet = new Set(
-          favRes.data.map(r => `${r.itemType}_${r.itemId}`)
-        )
+        // 构建收藏索引 { type_id: true }
+        const favSet = {}
+        ;(favRes.data || []).forEach(r => {
+          favSet[r.itemType + '_' + r.itemId] = true
+        })
 
         const goods = goodsRes.data.map(item => ({
           ...item,
           __type: 'goods',
-          isFavorited: favSet.has(`goods_${item._id}`)
+          isFavorited: !!favSet['goods_' + item._id]
         }))
         const lost = lostRes.data.map(item => ({
           ...item,
           __type: 'lost_found',
-          isFavorited: favSet.has(`lost_found_${item._id}`)
+          isFavorited: !!favSet['lost_found_' + item._id]
         }))
 
         const merged = [...goods, ...lost]
