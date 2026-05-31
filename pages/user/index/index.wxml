@@ -3,21 +3,32 @@
 
   <!-- 头部用户信息区 -->
   <view class="user-header">
+    <!-- 已登录状态 -->
     <view wx:if="{{hasLogin}}" class="user-info">
       <image class="avatar" src="{{userInfo.avatarUrl}}" mode="cover" />
       <view class="user-text">
         <text class="nickname">{{userInfo.nickName}}</text>
-        <text class="uid">欢迎使用校易通</text>
+        <text class="uid">欢迎回来</text>
       </view>
     </view>
 
-    <view wx:else class="user-login" bindtap="onLogin">
-      <image class="avatar-default" src="/images/default-avatar.png" mode="cover" />
-      <view class="user-text">
-        <text class="login-tip">点击登录</text>
-        <text class="login-desc">授权微信信息，畅享校园服务</text>
+    <!-- 未登录状态 -->
+    <view wx:else class="user-login-area">
+      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image class="avatar-default" src="{{avatarUrl || '/images/default-avatar.png'}}" mode="cover" />
+        <text class="avatar-tip">点击设置头像</text>
+      </button>
+      <view class="nickname-row">
+        <input
+          class="nickname-input"
+          type="nickname"
+          placeholder="请输入昵称"
+          value="{{nickName}}"
+          bindinput="onNicknameInput"
+        />
       </view>
-      <text class="arrow">›</text>
+      <button class="login-btn" bindtap="onSaveProfile" loading="{{saving}}">保存并登录</button>
+      <text class="login-notice">头像和昵称仅用于校内展示</text>
     </view>
   </view>
 

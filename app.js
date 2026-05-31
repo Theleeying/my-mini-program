@@ -20,7 +20,7 @@ App({
         this.globalData.openid = res.result.openid
       },
       fail: err => {
-        console.error('获取 openid 失败：', err)
+        console.warn('[app] 获取 openid 失败（云函数可能未部署）：', err.errMsg || err)
       }
     })
   },

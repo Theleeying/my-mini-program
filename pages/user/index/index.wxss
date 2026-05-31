@@ -16,24 +16,11 @@
   align-items: center;
 }
 
-.user-login {
-  display: flex;
-  align-items: center;
-}
-
 .avatar {
   width: 120rpx;
   height: 120rpx;
   border-radius: 50%;
   border: 4rpx solid rgba(255,255,255,0.5);
-  margin-right: 24rpx;
-}
-
-.avatar-default {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 50%;
-  background-color: rgba(255,255,255,0.3);
   margin-right: 24rpx;
 }
 
@@ -48,29 +35,106 @@
   display: block;
 }
 
-.login-tip {
-  font-size: 36rpx;
-  font-weight: 600;
-  color: var(--color-white);
-  display: block;
-}
-
 .uid {
   font-size: 24rpx;
   color: rgba(255,255,255,0.8);
   margin-top: 6rpx;
-}
-
-.login-desc {
-  font-size: 24rpx;
-  color: rgba(255,255,255,0.8);
-  margin-top: 6rpx;
   display: block;
 }
 
-.arrow {
-  font-size: 40rpx;
-  color: rgba(255,255,255,0.7);
+/* ===== 未登录区域 ===== */
+.user-login-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10rpx 0;
+}
+
+/* 头像按钮 - 无默认button样式 */
+.avatar-btn {
+  width: 130rpx;
+  height: 130rpx;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  line-height: 1;
+}
+
+.avatar-btn::after {
+  border: none;
+}
+
+.avatar-default {
+  width: 130rpx;
+  height: 130rpx;
+  border-radius: 50%;
+  border: 3rpx dashed rgba(255,255,255,0.6);
+  background-color: rgba(255,255,255,0.2);
+}
+
+.avatar-tip {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.8);
+  margin-top: 10rpx;
+  display: block;
+  text-align: center;
+}
+
+/* 昵称输入行 */
+.nickname-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 24rpx;
+}
+
+.nickname-input {
+  width: 400rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  background: rgba(255,255,255,0.9);
+  border-radius: 35rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: var(--color-text);
+  padding: 0 30rpx;
+}
+
+/* 登录按钮 */
+.login-btn {
+  width: 400rpx;
+  height: 76rpx;
+  line-height: 76rpx;
+  background: #ffffff;
+  color: var(--color-primary);
+  font-size: 30rpx;
+  font-weight: 600;
+  border-radius: 38rpx;
+  margin-top: 24rpx;
+  border: none;
+  padding: 0;
+  text-align: center;
+}
+
+.login-btn::after {
+  border: none;
+}
+
+.login-btn[loading] {
+  opacity: 0.7;
+}
+
+.login-notice {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.6);
+  margin-top: 14rpx;
 }
 
 /* ===== 菜单 ===== */
