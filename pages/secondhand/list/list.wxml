@@ -1,0 +1,8 @@
+<!--pages/secondhand/list/list.wxml — 二手交易列表（占位）-->
+<view class="container">
+  <view class="empty-state">
+    <text style="font-size: 80rpx;">📦</text>
+    <text style="margin-top: 20rpx;">二手交易模块</text>
+    <text style="font-size: 24rpx; color: #999; margin-top: 10rpx;">由成员B 负责开发</text>
+  </view>
+</view>

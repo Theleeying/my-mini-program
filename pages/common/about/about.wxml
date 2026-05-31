@@ -1,0 +1,27 @@
+<!--pages/common/about/about.wxml — 关于我们-->
+<view class="page-about">
+
+  <view class="about-header">
+    <text class="app-icon">🏫</text>
+    <text class="app-name">{{appName}}</text>
+    <text class="app-version">v{{version}}</text>
+  </view>
+
+  <view class="about-section card">
+    <text class="section-label">项目介绍</text>
+    <text class="section-content">{{description}}</text>
+  </view>
+
+  <view class="about-section card">
+    <text class="section-label">团队成员</text>
+    <view wx:for="{{team}}" wx:key="name" class="team-item">
+      <text class="team-name">{{item.name}}</text>
+      <text class="team-role">{{item.role}}</text>
+    </view>
+  </view>
+
+  <view class="about-footer">
+    <text>© 2026 校易通 Team · 微信小程序课程大作业</text>
+  </view>
+
+</view>

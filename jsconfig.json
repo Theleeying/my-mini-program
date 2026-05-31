@@ -1,6 +1,13 @@
 {
-	"compilerOptions": {
-		"target": "es2015",
-		"module": "commonjs"
-	}	
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "strict": true
+  },
+  "include": [
+    "**/*.js"
+  ],
+  "typeAcquisition": {
+    "include": ["wechat-miniprogram"]
+  }
 }

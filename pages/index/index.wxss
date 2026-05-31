@@ -1,62 +1,184 @@
-/**index.wxss**/
-page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-.scrollarea {
-  flex: 1;
-  overflow-y: hidden;
+/** pages/index/index.wxss — 首页样式 **/
+
+.page-index {
+  min-height: 100vh;
 }
 
-.userinfo {
+/* ===== 搜索栏 ===== */
+.search-bar {
+  padding: 20rpx 30rpx;
+  background-color: var(--color-primary);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-white);
+  border-radius: 40rpx;
+  padding: 12rpx 24rpx;
+}
+
+.search-icon {
+  margin-right: 12rpx;
+  font-size: 30rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 26rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+}
+
+/* ===== 轮播图 ===== */
+.banner-section {
+  margin: 0 0 20rpx 0;
+}
+
+.banner-swiper {
+  height: 320rpx;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+}
+
+.banner-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16rpx 24rpx;
+  background: linear-gradient(transparent, rgba(0,0,0,0.5));
+  color: var(--color-white);
+  font-size: 28rpx;
+}
+
+.banner-placeholder {
+  height: 320rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #C8E6C9, #4CAF50);
+  color: var(--color-white);
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+/* ===== 快捷入口 ===== */
+.quick-section {
+  padding: 0 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.quick-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.quick-item {
+  width: 25%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #aaa;
-  width: 80%;
+  padding: 24rpx 0;
 }
 
-.userinfo-avatar {
-  overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
+.quick-icon {
+  font-size: 56rpx;
+  margin-bottom: 12rpx;
 }
 
-.usermotto {
-  margin-top: 200px;
+.quick-name {
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
 }
 
-.avatar-wrapper {
-  padding: 0;
-  width: 56px !important;
-  border-radius: 8px;
-  margin-top: 40px;
-  margin-bottom: 40px;
+/* ===== 热门推荐 ===== */
+.hot-section {
+  padding: 0 20rpx 40rpx;
 }
 
-.avatar {
-  display: block;
-  width: 56px;
-  height: 56px;
+.hot-item {
+  margin-bottom: 16rpx;
 }
 
-.nickname-wrapper {
+.hot-row {
   display: flex;
-  width: 100%;
-  padding: 16px;
-  box-sizing: border-box;
-  border-top: .5px solid rgba(0, 0, 0, 0.1);
-  border-bottom: .5px solid rgba(0, 0, 0, 0.1);
-  color: black;
+  align-items: center;
 }
 
-.nickname-label {
-  width: 105px;
+.hot-thumb {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
 }
 
-.nickname-input {
-  flex: 1;
+.hot-thumb-placeholder {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  background-color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+}
+
+.hot-info {
+  min-width: 0;
+}
+
+.hot-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: var(--color-text);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hot-desc {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 8rpx;
+}
+
+.hot-meta {
+  display: flex;
+  align-items: center;
+  margin-top: 12rpx;
+}
+
+.hot-tag {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  margin-right: 16rpx;
+}
+
+.tag-goods {
+  background-color: #FFF3E0;
+  color: #FF9800;
+}
+
+.tag-lost {
+  background-color: #E3F2FD;
+  color: #2196F3;
+}
+
+.hot-price {
+  font-size: 30rpx;
+  color: var(--color-danger);
+  font-weight: 600;
 }

@@ -1,0 +1,56 @@
+<!--pages/user/my-publish/my-publish.wxml — 我的发布-->
+<view class="page-my-publish">
+
+  <!-- 切换栏 -->
+  <view class="tab-bar">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="*this"
+      class="tab-item {{activeTab === index ? 'tab-active' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="empty-state">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{list.length === 0}}" class="empty-state">
+    <text>还没有发布任何信息</text>
+  </view>
+
+  <!-- 列表 -->
+  <view wx:else class="publish-list">
+    <view
+      wx:for="{{list}}"
+      wx:key="_id"
+      class="publish-item card"
+      data-item="{{item}}"
+      bindtap="onItemTap"
+    >
+      <view class="flex-row">
+        <image wx:if="{{item.images && item.images.length}}" class="publish-thumb" src="{{item.images[0]}}" mode="aspectFill" />
+        <view wx:else class="publish-thumb-placeholder">
+          <text>{{activeTab === 0 ? '📦' : '🎯'}}</text>
+        </view>
+        <view class="publish-info flex-1">
+          <text class="publish-title">{{item.title}}</text>
+          <text class="publish-desc">{{item.description || ''}}</text>
+          <view class="publish-meta flex-between">
+            <text class="publish-status {{item.status === 'active' ? 'status-active' : 'status-done'}}">
+              {{activeTab === 0 ? (item.status === 'sold' ? '已售出' : '在售') : (item.status === 'resolved' ? '已认领/已找到' : '进行中')}}
+            </text>
+            <text class="publish-time" wx:if="{{item.createTime}}">{{item.createTime}}</text>
+          </view>
+        </view>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+</view>

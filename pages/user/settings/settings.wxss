@@ -1,0 +1,47 @@
+/** pages/user/settings/settings.wxss **/
+
+.page-settings {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  padding-top: 20rpx;
+}
+
+.settings-group {
+  background-color: var(--color-white);
+  margin-bottom: 20rpx;
+}
+
+.setting-item {
+  padding: 32rpx 24rpx;
+}
+
+.setting-right {
+  display: flex;
+  align-items: center;
+}
+
+.setting-hint {
+  color: var(--color-text-light);
+  font-size: 26rpx;
+  margin-right: 10rpx;
+}
+
+.setting-value {
+  color: var(--color-text-light);
+  font-size: 26rpx;
+}
+
+.logout-section {
+  padding: 60rpx 40rpx;
+}
+
+.btn-logout {
+  width: 100%;
+  background-color: var(--color-white);
+  color: var(--color-danger);
+  border: 1rpx solid var(--color-danger);
+  border-radius: 12rpx;
+  padding: 24rpx;
+  font-size: 30rpx;
+  text-align: center;
+}

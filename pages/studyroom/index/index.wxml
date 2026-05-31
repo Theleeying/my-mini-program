@@ -1,0 +1,8 @@
+<!--pages/studyroom/index/index.wxml — 自习助手（占位）-->
+<view class="container">
+  <view class="empty-state">
+    <text style="font-size: 80rpx;">📚</text>
+    <text style="margin-top: 20rpx;">自习助手模块</text>
+    <text style="font-size: 24rpx; color: #999; margin-top: 10rpx;">由成员C 负责开发</text>
+  </view>
+</view>

@@ -1,19 +1,32 @@
 // app.js
 App({
   onLaunch() {
-    // 展示本地存储能力
-    const logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
+    // 初始化云开发环境
+    if (wx.cloud) {
+      wx.cloud.init({
+        env: 'cloudbase-d3glfg3zf894b18e',
+        traceUser: true
+      })
+      // 获取用户 openid
+      this.getUserOpenId()
+    }
+  },
 
-    // 登录
-    wx.login({
+  getUserOpenId() {
+    // 云开发免鉴权登录，获取 openid
+    wx.cloud.callFunction({
+      name: 'login',
       success: res => {
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+        this.globalData.openid = res.result.openid
+      },
+      fail: err => {
+        console.error('获取 openid 失败：', err)
       }
     })
   },
+
   globalData: {
+    openid: null,
     userInfo: null
   }
 })

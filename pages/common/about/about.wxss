@@ -1,0 +1,79 @@
+/** pages/common/about/about.wxss **/
+
+.page-about {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  padding: 20rpx;
+}
+
+.about-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0 40rpx;
+}
+
+.app-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+}
+
+.app-name {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.app-version {
+  font-size: 26rpx;
+  color: var(--color-text-light);
+  margin-top: 8rpx;
+}
+
+.about-section {
+  margin-bottom: 20rpx;
+}
+
+.section-label {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--color-text);
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.section-content {
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.team-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid var(--color-border);
+}
+
+.team-item:last-child {
+  border-bottom: none;
+}
+
+.team-name {
+  font-size: 28rpx;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.team-role {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+}
+
+.about-footer {
+  text-align: center;
+  padding: 40rpx 0;
+  font-size: 22rpx;
+  color: var(--color-text-light);
+}
