@@ -1,0 +1,2 @@
+/** pages/secondhand/list/list.wxss — 占位样式 */
+page { background-color: var(--color-bg); }

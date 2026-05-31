@@ -1,0 +1,2 @@
+<!--pages/secondhand/detail/detail.wxml — 商品详情（占位）-->
+<view class="container"><view class="empty-state"><text>商品详情页 — 成员B</text></view></view>

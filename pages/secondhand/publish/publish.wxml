@@ -1,0 +1,2 @@
+<!--pages/secondhand/publish/publish.wxml — 发布商品（占位）-->
+<view class="container"><view class="empty-state"><text>发布商品页 — 成员B</text></view></view>
