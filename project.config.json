@@ -7,7 +7,7 @@
   },
   "setting": {
     "coverView": true,
-    "es6": false,
+    "es6": true,
     "postcss": true,
     "minified": true,
     "enhance": true,
@@ -26,8 +26,8 @@
     "minifyWXML": true,
     "localPlugins": false,
     "condition": false,
-    "swc": false,
-    "disableSWC": true,
+    "swc": true,
+    "disableSWC": false,
     "disableUseStrict": false,
     "useCompilerPlugins": false
   },
