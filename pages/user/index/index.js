@@ -26,52 +26,80 @@ Page({
   checkLoginStatus() {
     const app = getApp()
     const userInfo = app.globalData.userInfo
-    if (userInfo) {
-      this.setData({ userInfo, hasLogin: true })
-    }
+    this.setData({
+      userInfo: userInfo,
+      hasLogin: !!userInfo
+    })
   },
 
   // 微信授权登录
   onLogin() {
-    wx.getUserProfile({
-      desc: '用于完善个人资料',
-      success: (res) => {
-        const userInfo = res.userInfo
-        // 保存到全局
-        getApp().globalData.userInfo = userInfo
-        this.setData({ userInfo, hasLogin: true })
+    const app = getApp()
 
-        // 写入云数据库
-        const db = wx.cloud.database()
-        db.collection('users').where({
-          _openid: getApp().globalData.openid
-        }).get().then(rs => {
-          if (rs.data.length === 0) {
-            // 新用户，创建记录
-            db.collection('users').add({
-              data: {
-                nickName: userInfo.nickName,
-                avatarUrl: userInfo.avatarUrl,
-                createTime: db.serverDate()
-              }
-            })
-          } else {
-            // 老用户，更新信息
-            db.collection('users').doc(rs.data[0]._id).update({
-              data: {
-                nickName: userInfo.nickName,
-                avatarUrl: userInfo.avatarUrl
-              }
-            })
+    // 确保 openid 已获取
+    const doLogin = () => {
+      wx.getUserProfile({
+        desc: '用于完善个人资料',
+        success: (res) => {
+          const userInfo = res.userInfo
+          // 保存到全局
+          app.globalData.userInfo = userInfo
+          this.setData({ userInfo, hasLogin: true })
+
+          // 写入云数据库
+          const db = wx.cloud.database()
+          const openid = app.globalData.openid
+          if (!openid) {
+            console.warn('openid 未就绪，跳过写库')
+            return
           }
-        })
 
-        wx.showToast({ title: '登录成功', icon: 'success' })
-      },
-      fail: () => {
-        wx.showToast({ title: '登录已取消', icon: 'none' })
-      }
-    })
+          db.collection('users').where({
+            _openid: openid
+          }).get().then(rs => {
+            if (rs.data.length === 0) {
+              // 新用户，创建记录
+              db.collection('users').add({
+                data: {
+                  nickName: userInfo.nickName,
+                  avatarUrl: userInfo.avatarUrl,
+                  createTime: db.serverDate()
+                }
+              })
+            } else {
+              // 老用户，更新信息
+              db.collection('users').doc(rs.data[0]._id).update({
+                data: {
+                  nickName: userInfo.nickName,
+                  avatarUrl: userInfo.avatarUrl
+                }
+              })
+            }
+          })
+
+          wx.showToast({ title: '登录成功', icon: 'success' })
+        },
+        fail: () => {
+          wx.showToast({ title: '登录已取消', icon: 'none' })
+        }
+      })
+    }
+
+    // 如果 openid 未就绪，先主动获取
+    if (!app.globalData.openid) {
+      wx.cloud.callFunction({
+        name: 'login',
+        success: (res) => {
+          app.globalData.openid = res.result.openid
+          doLogin()
+        },
+        fail: () => {
+          wx.showToast({ title: '网络异常，请重试', icon: 'none' })
+        }
+      })
+    } else {
+      doLogin()
+    }
   },
 
   // 菜单点击

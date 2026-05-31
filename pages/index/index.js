@@ -27,15 +27,19 @@ Page({
   },
 
   onPullDownRefresh() {
-    Promise.all([this.loadBanners(), this.loadHotList()]).then(() => {
-      wx.stopPullDownRefresh()
-    })
+    Promise.all([this.loadBanners(), this.loadHotList()])
+      .then(() => {
+        wx.stopPullDownRefresh()
+      })
+      .catch(() => {
+        wx.stopPullDownRefresh()
+      })
   },
 
   // 加载轮播图
   loadBanners() {
     const db = wx.cloud.database()
-    db.collection('announcements')
+    return db.collection('announcements')
       .orderBy('createTime', 'desc')
       .limit(5)
       .get()
@@ -43,19 +47,13 @@ Page({
         this.setData({ banners: res.data })
       })
       .catch(() => {
-        // 无数据时使用默认轮播
-        this.setData({
-          banners: [
-            { image: '', title: '欢迎使用校易通' }
-          ]
-        })
+        this.setData({ banners: [] })
       })
   },
 
   // 加载热门推荐
   loadHotList() {
     const db = wx.cloud.database()
-    const _ = db.command
 
     // 并行加载最新二手和失物信息
     const goodsPromise = db.collection('goods')
@@ -70,7 +68,7 @@ Page({
       .limit(10)
       .get()
 
-    Promise.all([goodsPromise, lostPromise])
+    return Promise.all([goodsPromise, lostPromise])
       .then(([goodsRes, lostRes]) => {
         // 合并、按时间排序，取前10条
         const goods = goodsRes.data.map(item => ({ ...item, __type: 'goods' }))
@@ -80,12 +78,18 @@ Page({
           .slice(0, 10)
         this.setData({ hotList: merged })
       })
-      .catch(() => {
-        console.warn('加载热门推荐失败，可能数据库集合尚未创建')
+      .catch(err => {
+        console.warn('加载热门推荐失败：', err)
+        this.setData({ hotList: [] })
       })
   },
 
-  // 搜索
+  // 搜索输入
+  onSearchInput(e) {
+    this.setData({ searchKeyword: e.detail.value })
+  },
+
+  // 搜索提交
   onSearch() {
     const keyword = this.data.searchKeyword.trim()
     if (!keyword) {
@@ -102,8 +106,11 @@ Page({
   onQuickEntry(e) {
     const { url } = e.currentTarget.dataset
     if (url) {
-      wx.switchTab({ url }).catch(() => {
-        wx.navigateTo({ url })
+      wx.switchTab({
+        url,
+        fail: () => {
+          wx.navigateTo({ url })
+        }
       })
     }
   },

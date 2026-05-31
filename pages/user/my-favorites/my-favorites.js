@@ -10,7 +10,6 @@ Page({
   },
 
   loadFavorites() {
-    const app = getApp()
     const db = wx.cloud.database()
 
     this.setData({ loading: true })
@@ -37,10 +36,15 @@ Page({
           .then(goodsRes => {
             this.setData({ list: goodsRes.data, loading: false })
           })
+          .catch(err => {
+            console.error('查询商品失败：', err)
+            this.setData({ list: [], loading: false })
+            wx.showToast({ title: '加载失败', icon: 'none' })
+          })
       })
       .catch(err => {
         console.error('加载收藏失败：', err)
-        this.setData({ loading: false })
+        this.setData({ list: [], loading: false })
       })
   },
 
@@ -59,6 +63,10 @@ Page({
             .then(() => {
               wx.showToast({ title: '已取消收藏', icon: 'success' })
               this.loadFavorites()
+            })
+            .catch(err => {
+              console.error('取消收藏失败：', err)
+              wx.showToast({ title: '操作失败，请重试', icon: 'none' })
             })
         }
       }

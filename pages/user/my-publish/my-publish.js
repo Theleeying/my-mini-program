@@ -7,7 +7,8 @@ Page({
     // 列表数据
     list: [],
     loading: false,
-    noMore: false
+    noMore: false,
+    openidRetry: 0
   },
 
   onLoad() {
@@ -17,7 +18,7 @@ Page({
   // 切换 tab
   onTabChange(e) {
     const index = e.currentTarget.dataset.index
-    this.setData({ activeTab: index, list: [], noMore: false })
+    this.setData({ activeTab: index, list: [], noMore: false, openidRetry: 0 })
     this.loadData()
   },
 
@@ -25,7 +26,11 @@ Page({
   loadData() {
     const app = getApp()
     if (!app.globalData.openid) {
-      // 未获取到 openid，稍后重试
+      if (this.data.openidRetry >= 5) {
+        wx.showToast({ title: '获取用户信息失败，请返回重试', icon: 'none' })
+        return
+      }
+      this.setData({ openidRetry: this.data.openidRetry + 1 })
       setTimeout(() => this.loadData(), 500)
       return
     }
@@ -46,7 +51,7 @@ Page({
       })
       .catch(err => {
         console.error('加载发布记录失败：', err)
-        this.setData({ loading: false })
+        this.setData({ loading: false, list: [] })
         wx.showToast({ title: '加载失败，请下拉刷新', icon: 'none' })
       })
   },
@@ -62,6 +67,7 @@ Page({
 
   // 下拉刷新
   onPullDownRefresh() {
+    this.setData({ openidRetry: 0 })
     this.loadData()
     wx.stopPullDownRefresh()
   }
