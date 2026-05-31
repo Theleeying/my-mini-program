@@ -96,9 +96,11 @@ Page({
       wx.showToast({ title: '请输入搜索内容', icon: 'none' })
       return
     }
-    // 跳转到二手交易列表页带搜索参数
-    wx.navigateTo({
-      url: `/pages/secondhand/list/list?keyword=${encodeURIComponent(keyword)}`
+    // TabBar 页面不能用 navigateTo，通过全局变量传递搜索关键词
+    const app = getApp()
+    app.globalData.searchKeyword = keyword
+    wx.switchTab({
+      url: '/pages/secondhand/list/list'
     })
   },
 

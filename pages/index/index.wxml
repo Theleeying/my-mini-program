@@ -79,7 +79,7 @@
         </view>
         <view class="hot-info flex-1">
           <text class="hot-title">{{item.title}}</text>
-          <text class="hot-desc">{{item.description || item.detail || ''}}</text>
+          <text class="hot-desc">{{item.description || ''}}</text>
           <view class="hot-meta">
             <text class="hot-tag {{item.__type === 'goods' ? 'tag-goods' : 'tag-lost'}}">
               {{item.__type === 'goods' ? '二手' : '失物'}}

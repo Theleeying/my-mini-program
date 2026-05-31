@@ -27,6 +27,7 @@ App({
 
   globalData: {
     openid: null,
-    userInfo: null
+    userInfo: null,
+    searchKeyword: ''
   }
 })
