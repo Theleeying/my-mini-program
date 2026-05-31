@@ -1,78 +1,83 @@
 // pages/user/my-favorites/my-favorites.js — 我的收藏（商品 + 失物）
 Page({
   data: {
-    activeTab: 0,          // 0=商品, 1=失物
+    activeTab: 0,
     tabs: ['收藏的二手', '收藏的失物'],
-    list: [],              // 当前显示的列表
+    list: [],
     loading: false
   },
 
-  onShow() {
+  onShow: function () {
     this.loadFavorites()
   },
 
-  onTabChange(e) {
-    const idx = e.currentTarget.dataset.index
+  onTabChange: function (e) {
+    var idx = e.currentTarget.dataset.index
     this.setData({ activeTab: idx })
     this.loadFavorites()
   },
 
-  loadFavorites() {
-    const db = wx.cloud.database()
-    const itemType = this.data.activeTab === 0 ? 'goods' : 'lost_found'
+  loadFavorites: function () {
+    var db = wx.cloud.database()
+    var itemType = this.data.activeTab === 0 ? 'goods' : 'lost_found'
+    var that = this
 
-    this.setData({ loading: true })
+    that.setData({ loading: true })
 
     db.collection('favorites')
-      .where({ itemType })
+      .where({ itemType: itemType })
       .orderBy('createTime', 'desc')
       .get()
-      .then(res => {
+      .then(function (res) {
         if (res.data.length === 0) {
-          this.setData({ list: [], loading: false })
+          that.setData({ list: [], loading: false })
           return
         }
 
-        const ids = [...new Set(res.data.map(r => r.itemId))]
-        const collectionName = itemType === 'goods' ? 'goods' : 'lost_found'
+        var idMap = {}
+        res.data.forEach(function (r) {
+          idMap[r.itemId] = true
+        })
+        var ids = Object.keys(idMap)
+        var collectionName = itemType === 'goods' ? 'goods' : 'lost_found'
 
         db.collection(collectionName)
           .where({ _id: db.command.in(ids) })
           .get()
-          .then(detailRes => {
-            this.setData({ list: detailRes.data, loading: false })
+          .then(function (detailRes) {
+            that.setData({ list: detailRes.data, loading: false })
           })
-          .catch(err => {
+          .catch(function (err) {
             console.error('查询收藏详情失败：', err)
-            this.setData({ list: [], loading: false })
+            that.setData({ list: [], loading: false })
           })
       })
-      .catch(err => {
+      .catch(function (err) {
         console.error('加载收藏失败：', err)
-        this.setData({ list: [], loading: false })
+        that.setData({ list: [], loading: false })
       })
   },
 
-  // 取消收藏
-  onUnfavorite(e) {
-    const { id } = e.currentTarget.dataset
-    const itemType = this.data.activeTab === 0 ? 'goods' : 'lost_found'
+  onUnfavorite: function (e) {
+    var id = e.currentTarget.dataset.id
+    var itemType = this.data.activeTab === 0 ? 'goods' : 'lost_found'
+    var that = this
 
     wx.showModal({
       title: '提示',
       content: '确定要取消收藏吗？',
-      success: (res) => {
+      success: function (res) {
         if (!res.confirm) return
 
-        const db = wx.cloud.database()
+        var db = wx.cloud.database()
         db.collection('favorites')
-          .where({ itemId: id, itemType })
+          .where({ itemId: id, itemType: itemType })
           .remove()
-          .then(() => {
+          .then(function () {
             wx.showToast({ title: '已取消收藏', icon: 'success' })
-            this.loadFavorites()
+            that.loadFavorites()
           })
-          .catch(err => {
+          .catch(function (err) {
             console.error('取消收藏失败：', err)
             wx.showToast({ title: '操作失败', icon: 'none' })
           })
@@ -80,18 +85,17 @@ Page({
     })
   },
 
-  // 查看详情 — 根据类型跳转不同页面
-  onItemTap(e) {
-    const { id } = e.currentTarget.dataset
-    const prefix = this.data.activeTab === 0
+  onItemTap: function (e) {
+    var id = e.currentTarget.dataset.id
+    var prefix = this.data.activeTab === 0
       ? '/pages/secondhand/detail/detail'
       : '/pages/lostfound/detail/detail'
     wx.navigateTo({
-      url: `${prefix}?id=${id}`
+      url: prefix + '?id=' + id
     })
   },
 
-  onPullDownRefresh() {
+  onPullDownRefresh: function () {
     this.loadFavorites()
     wx.stopPullDownRefresh()
   }

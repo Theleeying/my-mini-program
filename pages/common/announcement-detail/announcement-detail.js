@@ -5,34 +5,34 @@ Page({
     loading: true
   },
 
-  onLoad(options) {
-    const { id } = options
+  onLoad: function (options) {
+    var id = options.id
     if (!id) {
       wx.showToast({ title: '公告不存在', icon: 'none' })
-      setTimeout(() => wx.navigateBack(), 1500)
+      setTimeout(function () { wx.navigateBack() }, 1500)
       return
     }
     this.loadDetail(id)
   },
 
-  loadDetail(id) {
-    const db = wx.cloud.database()
+  loadDetail: function (id) {
+    var db = wx.cloud.database()
+    var that = this
     db.collection('announcements')
       .doc(id)
       .get()
-      .then(res => {
-        this.setData({ item: res.data, loading: false })
+      .then(function (res) {
+        that.setData({ item: res.data, loading: false })
       })
-      .catch(err => {
+      .catch(function (err) {
         console.error('加载公告详情失败：', err)
-        this.setData({ loading: false })
+        that.setData({ loading: false })
         wx.showToast({ title: '加载失败', icon: 'none' })
       })
   },
 
-  // 预览大图
-  onPreviewImage() {
-    const { item } = this.data
+  onPreviewImage: function () {
+    var item = this.data.item
     if (!item || !item.image) return
     wx.previewImage({
       urls: [item.image],

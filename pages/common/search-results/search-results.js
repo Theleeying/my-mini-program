@@ -4,59 +4,76 @@ Page({
     keyword: '',
     activeTab: 0,
     tabs: ['全部', '二手交易', '失物招领'],
-    allList: [],     // 全部结果
-    goodsList: [],    // 仅二手
-    lostList: [],     // 仅失物
-    displayList: [],  // 当前展示的列表
+    allList: [],
+    goodsList: [],
+    lostList: [],
+    displayList: [],
     loading: true,
     noResult: false
   },
 
-  onLoad(options) {
-    const keyword = decodeURIComponent(options.keyword || '')
+  onLoad: function (options) {
+    var keyword = decodeURIComponent(options.keyword || '')
     if (!keyword) {
       wx.showToast({ title: '请输入搜索内容', icon: 'none' })
-      setTimeout(() => wx.navigateBack(), 1500)
+      setTimeout(function () { wx.navigateBack() }, 1500)
       return
     }
-    this.setData({ keyword })
+    this.setData({ keyword: keyword })
     this.doSearch(keyword)
   },
 
-  doSearch(keyword) {
-    const db = wx.cloud.database()
-    const kw = keyword.toLowerCase()
+  doSearch: function (keyword) {
+    var db = wx.cloud.database()
+    var kw = keyword.toLowerCase()
+    var that = this
 
-    const goodsPromise = db.collection('goods')
+    var goodsPromise = db.collection('goods')
       .where({ status: 'active' })
       .orderBy('createTime', 'desc')
       .limit(50)
       .get()
-      .catch(() => ({ data: [] }))
 
-    const lostPromise = db.collection('lost_found')
+    var lostPromise = db.collection('lost_found')
       .where({ status: 'active' })
       .orderBy('createTime', 'desc')
       .limit(50)
       .get()
-      .catch(() => ({ data: [] }))
 
-    Promise.all([goodsPromise, lostPromise]).then(([goodsRes, lostRes]) => {
-      // 客户端关键词过滤
-      const match = (text) => String(text || '').toLowerCase().includes(kw)
+    Promise.all([goodsPromise, lostPromise]).then(function (results) {
+      var goodsRes = results[0]
+      var lostRes = results[1]
 
-      const goods = goodsRes.data
-        .filter(item => match(item.title) || match(item.description) || match(item.category))
-        .map(item => ({ ...item, __type: 'goods' }))
+      function match(text) {
+        return String(text || '').toLowerCase().indexOf(kw) !== -1
+      }
 
-      const lost = lostRes.data
-        .filter(item => match(item.title) || match(item.description) || match(item.category))
-        .map(item => ({ ...item, __type: 'lost_found' }))
+      var goods = []
+      goodsRes.data.forEach(function (item) {
+        if (match(item.title) || match(item.description) || match(item.category)) {
+          var copy = {}
+          var keys = Object.keys(item)
+          for (var k = 0; k < keys.length; k++) { copy[keys[k]] = item[keys[k]] }
+          copy.__type = 'goods'
+          goods.push(copy)
+        }
+      })
 
-      const all = [...goods, ...lost]
-        .sort((a, b) => new Date(b.createTime) - new Date(a.createTime))
+      var lost = []
+      lostRes.data.forEach(function (item) {
+        if (match(item.title) || match(item.description) || match(item.category)) {
+          var copy = {}
+          var keys = Object.keys(item)
+          for (var k2 = 0; k2 < keys.length; k2++) { copy[keys[k2]] = item[keys[k2]] }
+          copy.__type = 'lost_found'
+          lost.push(copy)
+        }
+      })
 
-      this.setData({
+      var all = goods.concat(lost)
+        .sort(function (a, b) { return new Date(b.createTime) - new Date(a.createTime) })
+
+      that.setData({
         allList: all,
         goodsList: goods,
         lostList: lost,
@@ -64,42 +81,34 @@ Page({
         loading: false,
         noResult: all.length === 0
       })
-    }).catch(err => {
+    }).catch(function (err) {
       console.error('搜索失败：', err)
-      this.setData({ loading: false, noResult: true })
+      that.setData({ loading: false, noResult: true })
     })
   },
 
-  // Tab 切换
-  onTabChange(e) {
-    const idx = parseInt(e.currentTarget.dataset.index)
-    let displayList
+  onTabChange: function (e) {
+    var idx = parseInt(e.currentTarget.dataset.index)
+    var displayList
     if (idx === 0) displayList = this.data.allList
     else if (idx === 1) displayList = this.data.goodsList
     else displayList = this.data.lostList
 
-    this.setData({ activeTab: idx, displayList })
+    this.setData({ activeTab: idx, displayList: displayList })
   },
 
-  // 搜索框回车
-  onSearchConfirm(e) {
-    const kw = (e.detail.value || '').trim()
+  onSearchConfirm: function (e) {
+    var kw = (e.detail.value || '').trim()
     if (!kw) return
     this.setData({ keyword: kw, loading: true, activeTab: 0 })
     this.doSearch(kw)
   },
 
-  // 点击结果
-  onItemTap(e) {
-    const { item } = e.currentTarget.dataset
-    const url = item.__type === 'goods'
-      ? `/pages/secondhand/detail/detail?id=${item._id}`
-      : `/pages/lostfound/detail/detail?id=${item._id}`
-    wx.navigateTo({ url })
-  },
-
-  // 返回
-  onBack() {
-    wx.navigateBack()
+  onItemTap: function (e) {
+    var item = e.currentTarget.dataset.item
+    var url = item.__type === 'goods'
+      ? '/pages/secondhand/detail/detail?id=' + item._id
+      : '/pages/lostfound/detail/detail?id=' + item._id
+    wx.navigateTo({ url: url })
   }
 })
