@@ -1,0 +1,7 @@
+node_modules/
+.sourcemaps/
+unpackage/
+dist/
+
+# 微信开发者工具生成的本地配置
+project.private.config.json
