@@ -1,0 +1,43 @@
+<!--pages/user/my-favorites/my-favorites.wxml — 我的收藏-->
+<view class="page-my-favorites">
+
+  <view wx:if="{{loading}}" class="empty-state">
+    <text>加载中...</text>
+  </view>
+
+  <view wx:elif="{{list.length === 0}}" class="empty-state">
+    <text>⭐</text>
+    <text style="margin-top: 20rpx;">还没有收藏任何商品</text>
+    <text style="font-size: 24rpx; margin-top: 10rpx;">去二手市场看看吧</text>
+  </view>
+
+  <view wx:else class="fav-list">
+    <view
+      wx:for="{{list}}"
+      wx:key="_id"
+      class="fav-item card"
+      data-id="{{item._id}}"
+      bindtap="onItemTap"
+    >
+      <view class="flex-row">
+        <image wx:if="{{item.images && item.images.length}}" class="fav-thumb" src="{{item.images[0]}}" mode="aspectFill" />
+        <view wx:else class="fav-thumb-placeholder">
+          <text>📦</text>
+        </view>
+        <view class="fav-info flex-1">
+          <text class="fav-title">{{item.title}}</text>
+          <text class="fav-desc">{{item.description || ''}}</text>
+          <view class="flex-between" style="margin-top: 10rpx;">
+            <text class="fav-price" wx:if="{{item.price}}">¥{{item.price}}</text>
+          </view>
+        </view>
+        <view class="fav-actions">
+          <view class="btn-unfav" data-id="{{item._id}}" catchtap="onUnfavorite">
+            取消
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+</view>

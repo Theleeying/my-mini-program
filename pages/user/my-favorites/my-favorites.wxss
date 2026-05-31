@@ -1,0 +1,77 @@
+/** pages/user/my-favorites/my-favorites.wxss **/
+
+.page-my-favorites {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+.fav-list {
+  padding: 20rpx;
+}
+
+.fav-item {
+  margin-bottom: 16rpx;
+}
+
+.fav-thumb {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.fav-thumb-placeholder {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  background-color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+}
+
+.fav-info {
+  min-width: 0;
+}
+
+.fav-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fav-desc {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+  display: block;
+  margin-top: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fav-price {
+  font-size: 32rpx;
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.fav-actions {
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.btn-unfav {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+  padding: 10rpx 20rpx;
+  border: 1rpx solid var(--color-border);
+  border-radius: 8rpx;
+}

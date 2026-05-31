@@ -1,0 +1,23 @@
+<!--pages/user/settings/settings.wxml — 设置-->
+<view class="page-settings">
+
+  <view class="settings-group">
+    <view class="setting-item list-item">
+      <text>清除缓存</text>
+      <view class="setting-right" bindtap="onClearCache">
+        <text class="setting-hint">{{cacheSize}}</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+
+    <view class="setting-item list-item">
+      <text>当前版本</text>
+      <text class="setting-value">{{version}}</text>
+    </view>
+  </view>
+
+  <view class="logout-section">
+    <button class="btn-logout" bindtap="onLogout">退出登录</button>
+  </view>
+
+</view>
