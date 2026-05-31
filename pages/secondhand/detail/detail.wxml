@@ -1,2 +1,84 @@
-<!--pages/secondhand/detail/detail.wxml — 商品详情（占位）-->
-<view class="container"><view class="empty-state"><text>商品详情页 — 成员B</text></view></view>
+<!-- 商品详情页 -->
+<view class="page" wx:if="{{!isLoading && goods}}">
+
+  <!-- 图片轮播 -->
+  <swiper class="image-swiper" 
+          indicator-dots="{{goods.images && goods.images.length > 1}}"
+          indicator-color="rgba(255,255,255,0.5)"
+          indicator-active-color="#fff"
+          bindchange="onSwiperChange">
+    <swiper-item wx:for="{{goods.images}}" wx:key="*this">
+      <image class="swiper-image" 
+             src="{{item}}" 
+             mode="aspectFill"
+             data-index="{{index}}"
+             bindtap="onImagePreview"/>
+    </swiper-item>
+  </swiper>
+
+  <!-- 图片索引 -->
+  <view class="image-counter" wx:if="{{goods.images && goods.images.length > 1}}">
+    <text>{{currentImageIndex + 1}}/{{goods.images.length}}</text>
+  </view>
+
+  <!-- 商品基本信息 -->
+  <view class="card">
+    <text class="goods-title-detail">{{goods.title}}</text>
+    <view class="price-row">
+      <text class="price">¥{{goods.price}}</text>
+      <text class="tag tag-primary">{{goods.condition === 'brand_new' ? '全新' : goods.condition === 'like_new' ? '几乎全新' : goods.condition === 'used' ? '正常使用' : '有瑕疵'}}</text>
+    </view>
+    <view class="meta-row">
+      <text class="meta-item">👁 {{goods.viewCount || 0}} 次浏览</text>
+      <text class="meta-item">🕐 {{goods.createTimeText || ''}}</text>
+      <text class="meta-item">📂 {{goods.category === 'book' ? '教材书籍' : goods.category === 'digital' ? '数码产品' : goods.category === 'life' ? '生活用品' : goods.category === 'sports' ? '运动器材' : '其他'}}</text>
+    </view>
+  </view>
+
+  <!-- 商品描述 -->
+  <view class="card" wx:if="{{goods.description}}">
+    <view class="section-title">商品描述</view>
+    <text class="description">{{goods.description}}</text>
+  </view>
+
+  <!-- 卖家信息 -->
+  <view class="card">
+    <view class="section-title">卖家信息</view>
+    <view class="seller-card">
+      <image class="seller-avatar" src="{{goods.sellerAvatar || '/images/default-avatar.png'}}" mode="aspectFill"/>
+      <view class="seller-info">
+        <text class="seller-name">{{goods.sellerName || '匿名用户'}}</text>
+        <text class="seller-contact" wx:if="{{goods.contact}}">📞 {{goods.contact}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 发布位置（预留） -->
+  <view class="card" wx:if="{{goods.location}}">
+    <view class="section-title">交易位置</view>
+    <text class="location-text">📍 {{goods.location}}</text>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar-safe"></view>
+  <view class="bottom-bar">
+    <view class="bottom-action" bindtap="onToggleFavorite">
+      <text style="font-size: 40rpx;">{{isFavorite ? '❤️' : '🤍'}}</text>
+      <text style="font-size: 20rpx; color: {{isFavorite ? '#D9534F' : '#999'}};">
+        {{isFavorite ? '已收藏' : '收藏'}}
+      </text>
+    </view>
+    <button class="bottom-btn contact-btn" open-type="share" style="background:#f5f5f5;color:#666;">
+      <text>🔗 分享</text>
+    </button>
+    <view class="bottom-btn" bindtap="onContactSeller">
+      <text>💬 联系卖家</text>
+    </view>
+  </view>
+
+</view>
+
+<!-- 加载中 -->
+<view class="empty-state" wx:if="{{isLoading}}">
+  <text>加载中...</text>
+</view>

@@ -1,8 +1,126 @@
-<!--pages/secondhand/list/list.wxml — 二手交易列表（占位）-->
-<view class="container">
-  <view class="empty-state">
-    <text style="font-size: 80rpx;">📦</text>
-    <text style="margin-top: 20rpx;">二手交易模块</text>
-    <text style="font-size: 24rpx; color: #999; margin-top: 10rpx;">由成员B 负责开发</text>
+<!-- 二手商品列表页 -->
+<view class="page">
+
+  <!-- 搜索栏 -->
+  <view class="search-bar" wx:if="{{showSearch}}">
+    <view class="search-input-wrap">
+      <icon type="search" size="16" color="#999"/>
+      <input class="search-input" 
+             placeholder="搜索商品..." 
+             value="{{searchKeyword}}"
+             bindinput="onSearchInput"
+             bindconfirm="onSearchConfirm"
+             focus="{{showSearch}}"
+             confirm-type="search"/>
+      <text class="search-clear" wx:if="{{searchKeyword}}" bindtap="onToggleSearch">✕</text>
+    </view>
   </view>
+
+  <!-- 顶部操作栏 -->
+  <view class="top-bar">
+    <view class="top-left">
+      <view class="search-btn" bindtap="onToggleSearch">
+        <text>🔍 搜索</text>
+      </view>
+    </view>
+    <view class="sort-btn" bindtap="onToggleSortMenu">
+      <text>
+        {{sortType === 'time' ? '⏱ 最新' : ''}}
+        {{sortType === 'price_asc' ? '↑ 价格低' : ''}}
+        {{sortType === 'price_desc' ? '↓ 价格高' : ''}}
+      </text>
+    </view>
+  </view>
+
+  <!-- 排序下拉菜单 -->
+  <view class="sort-menu" wx:if="{{showSortMenu}}">
+    <view class="sort-item {{sortType === 'time' ? 'active' : ''}}" data-type="time" bindtap="onSortChange">⏱ 最新发布</view>
+    <view class="sort-item {{sortType === 'price_asc' ? 'active' : ''}}" data-type="price_asc" bindtap="onSortChange">↑ 价格从低到高</view>
+    <view class="sort-item {{sortType === 'price_desc' ? 'active' : ''}}" data-type="price_desc" bindtap="onSortChange">↓ 价格从高到低</view>
+  </view>
+
+  <!-- 分类 Tab -->
+  <scroll-view class="tabs" scroll-x enable-flex>
+    <view class="tab-item {{activeCategory === item.key ? 'active' : ''}}"
+          wx:for="{{categories}}"
+          wx:key="key"
+          data-key="{{item.key}}"
+          bindtap="onTabChange">
+      {{item.name}}
+    </view>
+  </scroll-view>
+
+  <!-- 商品瀑布流 -->
+  <view class="waterfall" wx:if="{{leftList.length > 0 || rightList.length > 0}}">
+    <!-- 左列 -->
+    <view class="waterfall-column">
+      <view class="goods-card" 
+            wx:for="{{leftList}}" 
+            wx:key="_id" 
+            data-id="{{item._id}}"
+            bindtap="onGoodsTap">
+        <image class="goods-img" 
+               src="{{item.images && item.images.length > 0 ? item.images[0] : '/images/default-goods.png'}}" 
+               mode="widthFix"
+               lazy-load/>
+        <view class="goods-info">
+          <text class="goods-title ellipsis-2">{{item.title}}</text>
+          <view class="goods-bottom">
+            <text class="goods-price">¥{{item.price}}</text>
+            <text class="goods-tag tag tag-primary">{{item.condition}}</text>
+          </view>
+          <view class="goods-meta">
+            <text class="goods-view">👁 {{item.viewCount || 0}}</text>
+            <text class="goods-time">{{item.createTimeText || ''}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 右列 -->
+    <view class="waterfall-column">
+      <view class="goods-card" 
+            wx:for="{{rightList}}" 
+            wx:key="_id" 
+            data-id="{{item._id}}"
+            bindtap="onGoodsTap">
+        <image class="goods-img" 
+               src="{{item.images && item.images.length > 0 ? item.images[0] : '/images/default-goods.png'}}" 
+               mode="widthFix"
+               lazy-load/>
+        <view class="goods-info">
+          <text class="goods-title ellipsis-2">{{item.title}}</text>
+          <view class="goods-bottom">
+            <text class="goods-price">¥{{item.price}}</text>
+            <text class="goods-tag tag tag-primary">{{item.condition}}</text>
+          </view>
+          <view class="goods-meta">
+            <text class="goods-view">👁 {{item.viewCount || 0}}</text>
+            <text class="goods-time">{{item.createTimeText || ''}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{leftList.length === 0 && rightList.length === 0 && !isLoading}}">
+    <text style="font-size: 80rpx; margin-bottom: 20rpx;">📦</text>
+    <text>暂无商品</text>
+    <text style="color: #bbb; font-size: 24rpx; margin-top: 10rpx;">快来发布第一件商品吧</text>
+  </view>
+
+  <!-- 上拉加载更多 -->
+  <view class="loading-tip" wx:if="{{isLoading}}">
+    <text>加载中...</text>
+  </view>
+  <view class="loading-tip" wx:elif="{{!hasMore && goodsList.length > 0}}">
+    <text>—— 到底了 ——</text>
+  </view>
+
+  <!-- 发布按钮 -->
+  <view class="publish-btn" bindtap="onPublishTap">
+    <text style="font-size: 40rpx;">＋</text>
+    <text style="font-size: 22rpx;">发布</text>
+  </view>
+
 </view>
