@@ -1,27 +1,94 @@
-<!--index.wxml-->
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    <view class="userinfo">
-      <block wx:if="{{canIUseNicknameComp && !hasUserInfo}}">
-        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
-        </view>
-      </block>
-      <block wx:elif="{{!hasUserInfo}}">
-        <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-        <view wx:else> 请使用2.10.4及以上版本基础库 </view>
-      </block>
-      <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-      </block>
-    </view>
-    <view class="usermotto">
-      <text class="user-motto">{{motto}}</text>
+<!--pages/index/index.wxml — 首页-->
+<view class="page-index">
+
+  <!-- 顶部搜索栏 -->
+  <view class="search-bar">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="搜索二手商品或失物信息..."
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+      />
     </view>
   </view>
-</scroll-view>
+
+  <!-- 轮播图 -->
+  <view class="banner-section">
+    <swiper
+      class="banner-swiper"
+      indicator-dots="{{banners.length > 1}}"
+      indicator-color="rgba(255,255,255,0.5)"
+      indicator-active-color="#4CAF50"
+      autoplay="{{banners.length > 1}}"
+      circular="{{banners.length > 1}}"
+      interval="4000"
+    >
+      <block wx:for="{{banners}}" wx:key="_id">
+        <swiper-item>
+          <image class="banner-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="banner-title">{{item.title}}</view>
+        </swiper-item>
+      </block>
+    </swiper>
+    <!-- 无轮播图时的占位 -->
+    <view wx:if="{{banners.length === 0}}" class="banner-placeholder">
+      <text>🏫 欢迎使用校易通</text>
+    </view>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="quick-section">
+    <view class="section-title">快捷服务</view>
+    <view class="quick-grid">
+      <view
+        wx:for="{{quickEntries}}"
+        wx:key="name"
+        class="quick-item"
+        data-url="{{item.url}}"
+        bindtap="onQuickEntry"
+      >
+        <text class="quick-icon">{{item.icon}}</text>
+        <text class="quick-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 热门推荐 -->
+  <view class="hot-section">
+    <view class="section-title">🔥 热门推荐</view>
+
+    <view wx:if="{{hotList.length === 0}}" class="empty-state">
+      <text>暂无推荐内容</text>
+    </view>
+
+    <view
+      wx:for="{{hotList}}"
+      wx:key="_id"
+      class="hot-item card"
+      data-item="{{item}}"
+      bindtap="onTapRecommend"
+    >
+      <view class="hot-row">
+        <image wx:if="{{item.images && item.images.length}}" class="hot-thumb" src="{{item.images[0]}}" mode="aspectFill" />
+        <view wx:else class="hot-thumb-placeholder">
+          <text>{{item.__type === 'goods' ? '📦' : '🎯'}}</text>
+        </view>
+        <view class="hot-info flex-1">
+          <text class="hot-title">{{item.title}}</text>
+          <text class="hot-desc">{{item.description || item.detail || ''}}</text>
+          <view class="hot-meta">
+            <text class="hot-tag {{item.__type === 'goods' ? 'tag-goods' : 'tag-lost'}}">
+              {{item.__type === 'goods' ? '二手' : '失物'}}
+            </text>
+            <text wx:if="{{item.__type === 'goods' && item.price}}" class="hot-price">¥{{item.price}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+</view>
