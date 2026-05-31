@@ -1,7 +1,7 @@
 // pages/index/index.js — 首页
 Page({
   data: {
-    loading: true,       // 首次加载骨架屏
+    loading: true,
     banners: [],
     quickEntries: [
       { name: '二手交易', icon: '📦', url: '/pages/secondhand/list/list' },
@@ -13,174 +13,185 @@ Page({
     searchKeyword: ''
   },
 
-  onLoad() {
+  onLoad: function () {
     this.loadBanners()
     this.loadHotList()
   },
 
-  onShow() {
+  onShow: function () {
     this.loadHotList()
   },
 
-  onPullDownRefresh() {
-    Promise.all([this.loadBanners(), this.loadHotList()])
-      .finally(() => wx.stopPullDownRefresh())
+  onPullDownRefresh: function () {
+    var that = this
+    Promise.all([that.loadBanners(), that.loadHotList()])
+      .then(function () { wx.stopPullDownRefresh() })
+      .catch(function () { wx.stopPullDownRefresh() })
   },
 
-  // ====== 加载轮播图 ======
-  loadBanners() {
-    const db = wx.cloud.database()
+  // 加载轮播图
+  loadBanners: function () {
+    var db = wx.cloud.database()
+    var that = this
     return db.collection('announcements')
       .orderBy('createTime', 'desc')
       .limit(5)
       .get()
-      .then(res => this.setData({ banners: res.data }))
-      .catch(() => this.setData({ banners: [] }))
+      .then(function (res) { that.setData({ banners: res.data }) })
+      .catch(function () { that.setData({ banners: [] }) })
   },
 
-  // ====== 加载热门推荐 + 收藏状态 ======
-  loadHotList() {
-    const db = wx.cloud.database()
+  // 加载热门推荐 + 收藏状态
+  loadHotList: function () {
+    var db = wx.cloud.database()
+    var that = this
 
-    const goodsPromise = db.collection('goods')
+    var goodsPromise = db.collection('goods')
       .where({ status: 'active' })
       .orderBy('createTime', 'desc')
       .limit(10)
       .get()
 
-    const lostPromise = db.collection('lost_found')
+    var lostPromise = db.collection('lost_found')
       .where({ status: 'active' })
       .orderBy('createTime', 'desc')
       .limit(10)
       .get()
 
-    const favPromise = db.collection('favorites')
+    var favPromise = db.collection('favorites')
       .field({ itemId: true, itemType: true })
       .get()
-      .catch(() => ({ data: [] }))
 
     return Promise.all([goodsPromise, lostPromise, favPromise])
-      .then(([goodsRes, lostRes, favRes]) => {
-        // 构建收藏索引 { type_id: true }
-        const favSet = {}
-        ;(favRes.data || []).forEach(r => {
+      .then(function (results) {
+        var goodsRes = results[0]
+        var lostRes = results[1]
+        var favRes = results[2]
+
+        var favSet = {}
+        ;(favRes.data || []).forEach(function (r) {
           favSet[r.itemType + '_' + r.itemId] = true
         })
 
-        const goods = goodsRes.data.map(item => ({
-          ...item,
-          __type: 'goods',
-          isFavorited: !!favSet['goods_' + item._id]
-        }))
-        const lost = lostRes.data.map(item => ({
-          ...item,
-          __type: 'lost_found',
-          isFavorited: !!favSet['lost_found_' + item._id]
-        }))
+        var goods = goodsRes.data.map(function (item) {
+          return Object.assign({}, item, {
+            __type: 'goods',
+            isFavorited: !!favSet['goods_' + item._id]
+          })
+        })
 
-        const merged = [...goods, ...lost]
-          .sort((a, b) => new Date(b.createTime) - new Date(a.createTime))
+        var lost = lostRes.data.map(function (item) {
+          return Object.assign({}, item, {
+            __type: 'lost_found',
+            isFavorited: !!favSet['lost_found_' + item._id]
+          })
+        })
+
+        var merged = goods.concat(lost)
+          .sort(function (a, b) { return new Date(b.createTime) - new Date(a.createTime) })
           .slice(0, 10)
 
-        this.setData({ hotList: merged, loading: false })
+        that.setData({ hotList: merged, loading: false })
       })
-      .catch(err => {
+      .catch(function (err) {
         console.warn('加载热门推荐失败：', err)
-        this.setData({ hotList: [], loading: false })
+        that.setData({ hotList: [], loading: false })
       })
   },
 
-  // ====== 收藏 / 取消收藏 ======
-  onToggleFavorite(e) {
-    const { id, type } = e.currentTarget.dataset
-    const app = getApp()
+  // 收藏 / 取消收藏
+  onToggleFavorite: function (e) {
+    var id = e.currentTarget.dataset.id
+    var type = e.currentTarget.dataset.type
+    var app = getApp()
 
-    // 检查登录
-    if (!app.globalData.openid && !wx.getStorageSync('userInfo')) {
+    if (!wx.getStorageSync('userInfo')) {
       wx.showToast({ title: '请先登录', icon: 'none' })
       return
     }
 
-    const db = wx.cloud.database()
-    const list = this.data.hotList
-    const idx = list.findIndex(item => item._id === id)
+    var db = wx.cloud.database()
+    var list = this.data.hotList
+    var idx = -1
+    for (var i = 0; i < list.length; i++) {
+      if (list[i]._id === id) { idx = i; break }
+    }
     if (idx === -1) return
 
-    const item = list[idx]
-    const itemType = item.__type // 'goods' or 'lost_found'
+    var item = list[idx]
+    var itemType = item.__type
+    var that = this
 
     if (item.isFavorited) {
-      // 取消收藏
       db.collection('favorites')
-        .where({ itemId: id, itemType })
+        .where({ itemId: id, itemType: itemType })
         .remove()
-        .then(() => {
+        .then(function () {
           list[idx].isFavorited = false
-          this.setData({ hotList: list })
+          that.setData({ hotList: list })
           wx.showToast({ title: '已取消收藏', icon: 'none' })
         })
-        .catch(() => wx.showToast({ title: '操作失败', icon: 'none' }))
+        .catch(function () { wx.showToast({ title: '操作失败', icon: 'none' }) })
     } else {
-      // 添加收藏
       db.collection('favorites').add({
         data: {
           itemId: id,
-          itemType,
+          itemType: itemType,
           createTime: db.serverDate()
         }
-      }).then(() => {
+      }).then(function () {
         list[idx].isFavorited = true
-        this.setData({ hotList: list })
+        that.setData({ hotList: list })
         wx.showToast({ title: '已收藏', icon: 'success' })
-      }).catch(() => wx.showToast({ title: '操作失败', icon: 'none' }))
+      }).catch(function () { wx.showToast({ title: '操作失败', icon: 'none' }) })
     }
   },
 
-  // ====== 搜索 ======
-  onSearchInput(e) {
+  // 搜索
+  onSearchInput: function (e) {
     this.setData({ searchKeyword: e.detail.value })
   },
 
-  onSearch() {
-    const keyword = this.data.searchKeyword.trim()
+  onSearch: function () {
+    var keyword = this.data.searchKeyword.trim()
     if (!keyword) {
       wx.showToast({ title: '请输入搜索内容', icon: 'none' })
       return
     }
     wx.navigateTo({
-      url: `/pages/common/search-results/search-results?keyword=${encodeURIComponent(keyword)}`
+      url: '/pages/common/search-results/search-results?keyword=' + encodeURIComponent(keyword)
     })
     this.setData({ searchKeyword: '' })
   },
 
-  // ====== 快捷入口 ======
-  onQuickEntry(e) {
-    const { url } = e.currentTarget.dataset
+  // 快捷入口
+  onQuickEntry: function (e) {
+    var url = e.currentTarget.dataset.url
     if (url) {
       wx.switchTab({
-        url,
-        fail: () => wx.navigateTo({ url })
+        url: url,
+        fail: function () { wx.navigateTo({ url: url }) }
       })
     }
   },
 
-  // ====== 轮播图点击 → 公告详情 ======
-  onBannerTap(e) {
-    const { id } = e.currentTarget.dataset
+  // 轮播图点击
+  onBannerTap: function (e) {
+    var id = e.currentTarget.dataset.id
     if (id) {
       wx.navigateTo({
-        url: `/pages/common/announcement-detail/announcement-detail?id=${id}`
+        url: '/pages/common/announcement-detail/announcement-detail?id=' + id
       })
     }
   },
 
-  // ====== 热门推荐点击 → 跳转详情 ======
-  onTapRecommend(e) {
-    const { item } = e.currentTarget.dataset
+  // 热门推荐点击
+  onTapRecommend: function (e) {
+    var item = e.currentTarget.dataset.item
     if (item.__type === 'goods') {
-      wx.navigateTo({ url: `/pages/secondhand/detail/detail?id=${item._id}` })
+      wx.navigateTo({ url: '/pages/secondhand/detail/detail?id=' + item._id })
     } else if (item.__type === 'lost_found') {
-      wx.navigateTo({ url: `/pages/lostfound/detail/detail?id=${item._id}` })
+      wx.navigateTo({ url: '/pages/lostfound/detail/detail?id=' + item._id })
     }
   }
 })

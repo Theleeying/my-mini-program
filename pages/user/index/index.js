@@ -13,45 +13,39 @@ Page({
     ]
   },
 
-  onLoad() {
+  onLoad: function () {
     this.checkLogin()
   },
 
-  onShow() {
+  onShow: function () {
     this.checkLogin()
   },
 
-  checkLogin() {
-    const app = getApp()
-    const userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo')
+  checkLogin: function () {
+    var app = getApp()
+    var userInfo = app.globalData.userInfo || wx.getStorageSync('userInfo')
     if (userInfo) {
       app.globalData.userInfo = userInfo
-      this.setData({ userInfo, hasLogin: true })
+      this.setData({ userInfo: userInfo, hasLogin: true })
     }
   },
 
   // 微信一键授权登录
-  onWechatAuth(e) {
+  onWechatAuth: function (e) {
     if (e.detail.errMsg !== 'getUserInfo:ok') {
       wx.showToast({ title: '已取消授权', icon: 'none' })
       return
     }
 
-    const { nickName, avatarUrl } = e.detail.userInfo
-    const app = getApp()
+    var nickName = e.detail.userInfo.nickName
+    var avatarUrl = e.detail.userInfo.avatarUrl
+    var app = getApp()
+    var that = this
 
-    // 确保有 openid
-    const ensureOpenid = () =>
-      app.globalData.openid
-        ? Promise.resolve()
-        : wx.cloud.callFunction({ name: 'login' }).then(res => {
-            app.globalData.openid = res.result.openid
-          })
+    app.ensureOpenid().then(function () {
+      var db = wx.cloud.database()
 
-    ensureOpenid().then(() => {
-      const db = wx.cloud.database()
-
-      return db.collection('users').where({ _openid: app.globalData.openid }).get().then(rs => {
+      db.collection('users').where({ _openid: app.globalData.openid }).get().then(function (rs) {
         if (rs.data.length === 0) {
           return db.collection('users').add({
             data: {
@@ -65,26 +59,26 @@ Page({
             data: { nickName: nickName, avatarUrl: avatarUrl }
           })
         }
+      }).then(function () {
+        var userInfo = { nickName: nickName, avatarUrl: avatarUrl }
+        app.globalData.userInfo = userInfo
+        wx.setStorageSync('userInfo', userInfo)
+        that.setData({ userInfo: userInfo, hasLogin: true })
+        wx.showToast({ title: '登录成功', icon: 'success' })
       })
-    }).then(() => {
-      const userInfo = { nickName, avatarUrl }
-      app.globalData.userInfo = userInfo
-      wx.setStorageSync('userInfo', userInfo)
-      this.setData({ userInfo, hasLogin: true })
-      wx.showToast({ title: '登录成功', icon: 'success' })
-    }).catch(err => {
+    }).catch(function (err) {
       console.error('登录失败：', err)
       wx.showToast({ title: '网络异常，请重试', icon: 'none' })
     })
   },
 
   // 菜单跳转
-  onMenuTap(e) {
-    const { url } = e.currentTarget.dataset
+  onMenuTap: function (e) {
+    var url = e.currentTarget.dataset.url
     if (url) {
       wx.navigateTo({
-        url,
-        fail: () => wx.switchTab({ url })
+        url: url,
+        fail: function () { wx.switchTab({ url: url }) }
       })
     } else {
       wx.showModal({
