@@ -36,7 +36,11 @@ Page({
           var ids = Object.keys(classroomIds)
 
           if (ids.length === 0) {
-            that.setData({ list: res.data, loading: false })
+            // 兜底：无 classroomId 时显示"未知教室"
+            var list = res.data.map(function (item) {
+              return Object.assign({}, item, { roomName: '未知教室' })
+            })
+            that.setData({ list: list, loading: false })
             return
           }
 
