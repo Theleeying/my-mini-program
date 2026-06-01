@@ -79,6 +79,24 @@
     </view>
   </view>
 
+  <!-- 分类标签 -->
+  <view class="category-section">
+    <view class="section-title">🏷️ 分类浏览</view>
+    <scroll-view class="category-scroll" scroll-x>
+      <view class="category-tags">
+        <view
+          wx:for="{{categories}}"
+          wx:key="name"
+          class="category-tag"
+          data-category="{{item.name}}"
+          bindtap="onCategoryTap"
+        >
+          <text>{{item.icon}} {{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
   <!-- 热门推荐 -->
   <view class="hot-section">
     <view class="section-title">🔥 热门推荐</view>

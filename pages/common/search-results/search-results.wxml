@@ -8,11 +8,17 @@
       <input
         class="search-input"
         type="text"
-        placeholder="搜索二手或失物..."
+        placeholder="{{category ? '在「' + category + '」中搜索...' : '搜索二手或失物...'}}"
         value="{{keyword}}"
         bindconfirm="onSearchConfirm"
       />
     </view>
+  </view>
+
+  <!-- 分类标签提示 -->
+  <view wx:if="{{category && !keyword}}" class="context-hint">
+    <text class="context-tag">🏷️ {{category}}</text>
+    <text class="context-text">共找到 {{allList.length}} 条</text>
   </view>
 
   <!-- Tab 栏 -->

@@ -1,0 +1,51 @@
+<!--pages/user/my-reservations/my-reservations.wxml — 我的预约-->
+<view class="page-my-reservations">
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="empty-state">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{list.length === 0}}" class="empty-state">
+    <text style="font-size: 80rpx;">📅</text>
+    <text style="margin-top: 24rpx;">暂无预约记录</text>
+    <text style="font-size: 24rpx; color: #999; margin-top: 12rpx;">去自习助手预约教室吧</text>
+  </view>
+
+  <!-- 预约列表 -->
+  <view wx:else class="reservation-list">
+    <view
+      wx:for="{{list}}"
+      wx:key="_id"
+      class="reservation-item card"
+    >
+      <view class="res-header">
+        <text class="res-room">{{item.roomName}}</text>
+        <text class="res-status {{item.status === 'active' ? 'status-active' : 'status-cancelled'}}">
+          {{item.status === 'active' ? '有效' : '已取消'}}
+        </text>
+      </view>
+
+      <view class="res-info">
+        <view class="res-info-item">
+          <text class="res-label">📅 日期</text>
+          <text class="res-value">{{item.date}}</text>
+        </view>
+        <view class="res-info-item">
+          <text class="res-label">🕐 时段</text>
+          <text class="res-value">{{item.timeSlot}}</text>
+        </view>
+      </view>
+
+      <view class="res-footer" wx:if="{{item.status === 'active'}}">
+        <text class="res-time">预约时间：{{item.createTime}}</text>
+        <view class="btn-cancel" data-id="{{item._id}}" catchtap="onCancel">取消预约</view>
+      </view>
+      <view class="res-footer" wx:else>
+        <text class="res-time">已取消</text>
+      </view>
+    </view>
+  </view>
+
+</view>

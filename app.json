@@ -12,6 +12,7 @@
     "pages/user/index/index",
     "pages/user/my-publish/my-publish",
     "pages/user/my-favorites/my-favorites",
+    "pages/user/my-reservations/my-reservations",
     "pages/user/settings/settings",
     "pages/common/about/about",
     "pages/common/announcement-detail/announcement-detail",
