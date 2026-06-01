@@ -1,0 +1,81 @@
+<!--pages/common/search-results/search-results.wxml — 全局搜索结果-->
+<view class="page-search">
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="搜索二手或失物..."
+        value="{{keyword}}"
+        bindconfirm="onSearchConfirm"
+      />
+    </view>
+  </view>
+
+  <!-- Tab 栏 -->
+  <view class="result-tabs">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="*this"
+      class="result-tab {{activeTab === index ? 'tab-active' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      {{item}}
+      <text wx:if="{{index === 0 && allList.length}}" class="tab-count">{{allList.length}}</text>
+      <text wx:if="{{index === 1 && goodsList.length}}" class="tab-count">{{goodsList.length}}</text>
+      <text wx:if="{{index === 2 && lostList.length}}" class="tab-count">{{lostList.length}}</text>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="empty-state">
+    <text>搜索中...</text>
+  </view>
+
+  <!-- 无结果 -->
+  <view wx:elif="{{noResult}}" class="empty-state">
+    <text style="font-size: 80rpx;">🔍</text>
+    <text style="margin-top: 20rpx;">未找到 "{{keyword}}" 相关内容</text>
+    <text style="font-size: 24rpx; color: #999; margin-top: 12rpx;">试试其他关键词吧</text>
+  </view>
+
+  <!-- 结果列表 -->
+  <view wx:else class="result-list">
+    <view
+      wx:for="{{displayList}}"
+      wx:key="_id"
+      class="result-item card"
+      data-item="{{item}}"
+      bindtap="onItemTap"
+    >
+      <view class="flex-row">
+        <image
+          wx:if="{{item.images && item.images.length}}"
+          class="result-thumb"
+          src="{{item.images[0]}}"
+          mode="aspectFill"
+        />
+        <view wx:else class="result-thumb-placeholder">
+          <text>{{item.__type === 'goods' ? '📦' : '🎯'}}</text>
+        </view>
+
+        <view class="result-info flex-1">
+          <text class="result-title">{{item.title}}</text>
+          <text class="result-desc">{{item.description || ''}}</text>
+          <view class="result-meta">
+            <text class="result-tag {{item.__type === 'goods' ? 'tag-goods' : 'tag-lost'}}">
+              {{item.__type === 'goods' ? '二手 · ' + (item.category || '') : (item.type === 'lost' ? '失物' : '招领') + ' · ' + (item.category || '')}}
+            </text>
+            <text wx:if="{{item.__type === 'goods' && item.price}}" class="result-price">¥{{item.price}}</text>
+          </view>
+        </view>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+</view>

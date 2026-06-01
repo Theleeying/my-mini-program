@@ -1,0 +1,145 @@
+/** pages/common/search-results/search-results.wxss **/
+
+.page-search {
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+/* ===== 搜索栏 ===== */
+.search-bar {
+  padding: 20rpx 30rpx;
+  background: var(--color-primary);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: var(--color-white);
+  border-radius: 40rpx;
+  padding: 10rpx 24rpx;
+}
+
+.search-icon {
+  margin-right: 12rpx;
+  font-size: 28rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 26rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+}
+
+/* ===== 结果 Tab ===== */
+.result-tabs {
+  display: flex;
+  background: #fff;
+  border-bottom: 1rpx solid var(--color-border);
+  padding: 0 20rpx;
+}
+
+.result-tab {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+  border-bottom: 4rpx solid transparent;
+}
+
+.result-tab.tab-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+  font-weight: 600;
+}
+
+.tab-count {
+  font-size: 22rpx;
+  background: var(--color-bg);
+  color: var(--color-text-light);
+  padding: 2rpx 12rpx;
+  border-radius: 16rpx;
+  margin-left: 6rpx;
+}
+
+/* ===== 结果列表 ===== */
+.result-list {
+  padding: 20rpx;
+}
+
+.result-item {
+  margin-bottom: 16rpx;
+}
+
+.result-thumb {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.result-thumb-placeholder {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44rpx;
+}
+
+.result-info {
+  min-width: 0;
+}
+
+.result-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result-desc {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+  display: block;
+  margin-top: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result-meta {
+  display: flex;
+  align-items: center;
+  margin-top: 10rpx;
+}
+
+.result-tag {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+}
+
+.tag-goods { background: #FFF3E0; color: #FF9800; }
+.tag-lost  { background: #E3F2FD; color: #2196F3; }
+
+.result-price {
+  font-size: 30rpx;
+  color: var(--color-danger);
+  font-weight: 600;
+  margin-left: 16rpx;
+}
+
+.arrow {
+  font-size: 36rpx;
+  color: #ccc;
+  margin-left: 10rpx;
+}

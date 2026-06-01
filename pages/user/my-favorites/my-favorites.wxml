@@ -1,16 +1,36 @@
 <!--pages/user/my-favorites/my-favorites.wxml — 我的收藏-->
 <view class="page-my-favorites">
 
+  <!-- 切换栏 -->
+  <view class="tab-bar">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="*this"
+      class="tab-item {{activeTab === index ? 'tab-active' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 加载中 -->
   <view wx:if="{{loading}}" class="empty-state">
     <text>加载中...</text>
   </view>
 
+  <!-- 空状态 -->
   <view wx:elif="{{list.length === 0}}" class="empty-state">
-    <text>⭐</text>
-    <text style="margin-top: 20rpx;">还没有收藏任何商品</text>
-    <text style="font-size: 24rpx; margin-top: 10rpx;">去二手市场看看吧</text>
+    <text>{{activeTab === 0 ? '📦' : '🎯'}}</text>
+    <text style="margin-top: 20rpx;">
+      {{activeTab === 0 ? '还没有收藏任何商品' : '还没有收藏任何失物信息'}}
+    </text>
+    <text style="font-size: 24rpx; margin-top: 10rpx;">
+      {{activeTab === 0 ? '去二手市场看看吧' : '去失物招领看看吧'}}
+    </text>
   </view>
 
+  <!-- 列表 -->
   <view wx:else class="fav-list">
     <view
       wx:for="{{list}}"
@@ -20,21 +40,30 @@
       bindtap="onItemTap"
     >
       <view class="flex-row">
-        <image wx:if="{{item.images && item.images.length}}" class="fav-thumb" src="{{item.images[0]}}" mode="aspectFill" />
+        <!-- 缩略图 -->
+        <image
+          wx:if="{{item.images && item.images.length}}"
+          class="fav-thumb"
+          src="{{item.images[0]}}"
+          mode="aspectFill"
+        />
         <view wx:else class="fav-thumb-placeholder">
-          <text>📦</text>
+          <text>{{activeTab === 0 ? '📦' : '🎯'}}</text>
         </view>
+
         <view class="fav-info flex-1">
           <text class="fav-title">{{item.title}}</text>
           <text class="fav-desc">{{item.description || ''}}</text>
           <view class="flex-between" style="margin-top: 10rpx;">
-            <text class="fav-price" wx:if="{{item.price}}">¥{{item.price}}</text>
+            <text wx:if="{{activeTab === 0 && item.price}}" class="fav-price">¥{{item.price}}</text>
+            <text wx:if="{{activeTab === 1}}" class="fav-status {{item.status === 'active' ? 'status-active' : 'status-done'}}">
+              {{item.status === 'resolved' ? '已解决' : '进行中'}}
+            </text>
           </view>
         </view>
+
         <view class="fav-actions">
-          <view class="btn-unfav" data-id="{{item._id}}" catchtap="onUnfavorite">
-            取消
-          </view>
+          <view class="btn-unfav" data-id="{{item._id}}" catchtap="onUnfavorite">取消</view>
         </view>
       </view>
     </view>

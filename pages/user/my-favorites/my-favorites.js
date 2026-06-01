@@ -1,87 +1,101 @@
-// pages/user/my-favorites/my-favorites.js — 我的收藏
+// pages/user/my-favorites/my-favorites.js — 我的收藏（商品 + 失物）
 Page({
   data: {
+    activeTab: 0,
+    tabs: ['收藏的二手', '收藏的失物'],
     list: [],
     loading: false
   },
 
-  onShow() {
+  onShow: function () {
     this.loadFavorites()
   },
 
-  loadFavorites() {
-    const db = wx.cloud.database()
-
-    this.setData({ loading: true })
-
-    // 从 favorites 集合获取收藏的商品 id
-    db.collection('favorites')
-      .orderBy('createTime', 'desc')
-      .get()
-      .then(res => {
-        if (res.data.length === 0) {
-          this.setData({ list: [], loading: false })
-          return
-        }
-
-        // 获取所有收藏的商品 id
-        const goodsIds = res.data.map(item => item.goodsId)
-
-        // 查询对应的商品信息
-        db.collection('goods')
-          .where({
-            _id: db.command.in(goodsIds)
-          })
-          .get()
-          .then(goodsRes => {
-            this.setData({ list: goodsRes.data, loading: false })
-          })
-          .catch(err => {
-            console.error('查询商品失败：', err)
-            this.setData({ list: [], loading: false })
-            wx.showToast({ title: '加载失败', icon: 'none' })
-          })
-      })
-      .catch(err => {
-        console.error('加载收藏失败：', err)
-        this.setData({ list: [], loading: false })
-      })
+  onTabChange: function (e) {
+    var idx = e.currentTarget.dataset.index
+    this.setData({ activeTab: idx })
+    this.loadFavorites()
   },
 
-  // 取消收藏
-  onUnfavorite(e) {
-    const { id } = e.currentTarget.dataset
+  loadFavorites: function () {
+    var db = wx.cloud.database()
+    var itemType = this.data.activeTab === 0 ? 'goods' : 'lost_found'
+    var that = this
+    var app = getApp()
+
+    that.setData({ loading: true })
+
+    // 先确保有 openid，再按 _openid 范围查询当前用户的收藏
+    app.ensureOpenid().then(function (openid) {
+      return db.collection('favorites')
+        .where({ itemType: itemType, _openid: openid })
+        .orderBy('createTime', 'desc')
+        .get()
+    }).then(function (res) {
+      if (res.data.length === 0) {
+        that.setData({ list: [], loading: false })
+        return
+      }
+
+      var idMap = {}
+      res.data.forEach(function (r) {
+        idMap[r.itemId] = true
+      })
+      var ids = Object.keys(idMap)
+      var collectionName = itemType === 'goods' ? 'goods' : 'lost_found'
+
+      return db.collection(collectionName)
+        .where({ _id: db.command.in(ids) })
+        .get()
+        .then(function (detailRes) {
+          that.setData({ list: detailRes.data, loading: false })
+        })
+    }).catch(function (err) {
+      console.error('加载收藏失败：', err)
+      that.setData({ list: [], loading: false })
+    })
+  },
+
+  onUnfavorite: function (e) {
+    var id = e.currentTarget.dataset.id
+    var itemType = this.data.activeTab === 0 ? 'goods' : 'lost_found'
+    var that = this
+    var app = getApp()
+
     wx.showModal({
       title: '提示',
       content: '确定要取消收藏吗？',
-      success: (res) => {
-        if (res.confirm) {
-          const db = wx.cloud.database()
-          db.collection('favorites')
-            .where({ goodsId: id })
+      success: function (res) {
+        if (!res.confirm) return
+
+        var db = wx.cloud.database()
+        // 必须带上 _openid，避免误删其他用户的收藏记录
+        app.ensureOpenid().then(function (openid) {
+          return db.collection('favorites')
+            .where({ itemId: id, itemType: itemType, _openid: openid })
             .remove()
-            .then(() => {
-              wx.showToast({ title: '已取消收藏', icon: 'success' })
-              this.loadFavorites()
-            })
-            .catch(err => {
-              console.error('取消收藏失败：', err)
-              wx.showToast({ title: '操作失败，请重试', icon: 'none' })
-            })
-        }
+        }).then(function () {
+          wx.showToast({ title: '已取消收藏', icon: 'success' })
+          that.loadFavorites()
+        }).catch(function (err) {
+          console.error('取消收藏失败：', err)
+          wx.showToast({ title: '操作失败', icon: 'none' })
+        })
       }
     })
   },
 
-  // 查看详情
-  onItemTap(e) {
-    const { id } = e.currentTarget.dataset
+  onItemTap: function (e) {
+    var id = e.currentTarget.dataset.id
+    var prefix = this.data.activeTab === 0
+      ? '/pages/secondhand/detail/detail'
+      : '/pages/lostfound/detail/detail'
     wx.navigateTo({
-      url: `/pages/secondhand/detail/detail?id=${id}`
+      url: prefix + '?id=' + id
     })
   },
 
-  onPullDownRefresh() {
+  onPullDownRefresh: function () {
     this.loadFavorites()
     wx.stopPullDownRefresh()
   }
