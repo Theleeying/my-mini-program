@@ -23,11 +23,16 @@ Page({
     this.doSearch(keyword)
   },
 
+  // 注意：微信云数据库不支持服务端全文检索，目前采用「拉取最新 N 条 → 客户端过滤」方案。
+  // 受 limit 限制，可能遗漏旧数据中匹配的关键词。数据量增大后可考虑：
+  //   1. 使用 db.RegExp 做服务端正则匹配（需建索引）
+  //   2. 接入 ElasticSearch 或自建搜索云函数
   doSearch: function (keyword) {
     var db = wx.cloud.database()
     var kw = keyword.toLowerCase()
     var that = this
 
+    // 仅拉取最新活跃记录，服务端做初筛
     var goodsPromise = db.collection('goods')
       .where({ status: 'active' })
       .orderBy('createTime', 'desc')

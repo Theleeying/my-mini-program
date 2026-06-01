@@ -45,6 +45,7 @@ Page({
   loadHotList: function () {
     var db = wx.cloud.database()
     var that = this
+    var app = getApp()
 
     var goodsPromise = db.collection('goods')
       .where({ status: 'active' })
@@ -58,9 +59,15 @@ Page({
       .limit(10)
       .get()
 
-    var favPromise = db.collection('favorites')
-      .field({ itemId: true, itemType: true })
-      .get()
+    // 有 openid 时才查当前用户收藏状态（未登录时回退为空，不影响浏览）
+    var favPromise = app.ensureOpenid().then(function (openid) {
+      return db.collection('favorites')
+        .where({ _openid: openid })
+        .field({ itemId: true, itemType: true })
+        .get()
+    }).catch(function () {
+      return { data: [] }
+    })
 
     return Promise.all([goodsPromise, lostPromise, favPromise])
       .then(function (results) {
@@ -102,7 +109,6 @@ Page({
   // 收藏 / 取消收藏
   onToggleFavorite: function (e) {
     var id = e.currentTarget.dataset.id
-    var type = e.currentTarget.dataset.type
     var app = getApp()
 
     if (!wx.getStorageSync('userInfo')) {
@@ -123,15 +129,16 @@ Page({
     var that = this
 
     if (item.isFavorited) {
-      db.collection('favorites')
-        .where({ itemId: id, itemType: itemType })
-        .remove()
-        .then(function () {
-          list[idx].isFavorited = false
-          that.setData({ hotList: list })
-          wx.showToast({ title: '已取消收藏', icon: 'none' })
-        })
-        .catch(function () { wx.showToast({ title: '操作失败', icon: 'none' }) })
+      // 必须带上 _openid，避免误删其他用户的收藏记录
+      app.ensureOpenid().then(function (openid) {
+        return db.collection('favorites')
+          .where({ itemId: id, itemType: itemType, _openid: openid })
+          .remove()
+      }).then(function () {
+        list[idx].isFavorited = false
+        that.setData({ hotList: list })
+        wx.showToast({ title: '已取消收藏', icon: 'none' })
+      }).catch(function () { wx.showToast({ title: '操作失败', icon: 'none' }) })
     } else {
       db.collection('favorites').add({
         data: {
