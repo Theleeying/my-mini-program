@@ -1,1 +1,189 @@
-page { background-color: var(--color-bg); }
+/** pages/lostfound/detail/detail.wxss — 失物招领详情样式 **/
+
+.page-lost-detail {
+  min-height: 100vh;
+  padding-bottom: 160rpx;
+}
+
+/* ===== 加载中 ===== */
+.loading {
+  text-align: center;
+  padding: 200rpx 0;
+  color: var(--color-text-light);
+  font-size: 28rpx;
+}
+
+/* ===== 图片轮播 ===== */
+.detail-swiper {
+  width: 100%;
+  height: 600rpx;
+}
+
+.swiper-image {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  font-size: 80rpx;
+}
+
+/* ===== 信息卡片 ===== */
+.info-card {
+  margin: 20rpx;
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.type-tag {
+  font-size: 24rpx;
+  padding: 6rpx 20rpx;
+  border-radius: 24rpx;
+  margin-right: 16rpx;
+}
+
+.tag-lost {
+  color: var(--color-danger);
+  background-color: #FFEBEE;
+}
+
+.tag-found {
+  color: var(--color-primary);
+  background-color: #E8F5E9;
+}
+
+.status-tag {
+  font-size: 24rpx;
+  color: var(--color-accent);
+  background-color: #FFF3E0;
+  padding: 6rpx 20rpx;
+  border-radius: 24rpx;
+}
+
+.status-tag.resolved {
+  color: var(--color-text-light);
+  background-color: var(--color-bg);
+}
+
+.detail-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 12rpx;
+}
+
+.detail-category {
+  display: block;
+  font-size: 26rpx;
+  color: var(--color-primary);
+  margin-bottom: 8rpx;
+}
+
+.detail-time {
+  display: block;
+  font-size: 24rpx;
+  color: var(--color-text-light);
+  margin-bottom: 24rpx;
+}
+
+.desc-section {
+  border-top: 2rpx solid var(--color-border);
+  padding-top: 24rpx;
+}
+
+.desc-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 12rpx;
+}
+
+.desc-content {
+  display: block;
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* ===== 联系方式 ===== */
+.contact-card {
+  margin: 0 20rpx 20rpx;
+}
+
+.contact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contact-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.contact-arrow {
+  font-size: 26rpx;
+  color: var(--color-primary);
+}
+
+.contact-body {
+  margin-top: 20rpx;
+  border-top: 2rpx solid var(--color-border);
+  padding-top: 20rpx;
+}
+
+.contact-row {
+  display: flex;
+  padding: 10rpx 0;
+}
+
+.contact-key {
+  font-size: 28rpx;
+  color: var(--color-text-light);
+  width: 120rpx;
+}
+
+.contact-val {
+  font-size: 28rpx;
+  color: var(--color-text);
+  flex: 1;
+}
+
+.contact-val.phone {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* ===== 操作按钮 ===== */
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  padding: 20rpx 30rpx;
+  background-color: var(--color-white);
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.06);
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 30rpx;
+  border-radius: 44rpx;
+}
