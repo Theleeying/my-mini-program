@@ -1,8 +1,90 @@
-<!--pages/studyroom/index/index.wxml — 自习助手（占位）-->
-<view class="container">
-  <view class="empty-state">
-    <text style="font-size: 80rpx;">📚</text>
-    <text style="margin-top: 20rpx;">自习助手模块</text>
-    <text style="font-size: 24rpx; color: #999; margin-top: 10rpx;">由成员C 负责开发</text>
+<!--pages/studyroom/index/index.wxml — 自习助手首页-->
+<view class="page-studyroom">
+
+  <!-- 日期选择 -->
+  <view class="date-section card">
+    <view class="date-row">
+      <text class="date-label">选择日期</text>
+      <picker mode="date" value="{{date}}" bindchange="onDateChange">
+        <view class="date-picker">
+          <text class="date-text">{{dateStr}}</text>
+          <text class="date-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 教学楼选择 -->
+  <view class="section-card card">
+    <view class="section-label">选择教学楼</view>
+    <scroll-view class="building-scroll" scroll-x enable-flex>
+      <view class="building-list">
+        <view
+          wx:for="{{buildings}}"
+          wx:key="*this"
+          class="building-item {{activeBuilding === item ? 'active' : ''}}"
+          data-building="{{item}}"
+          bindtap="selectBuilding"
+        >
+          {{item}}
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 时间段选择 -->
+  <view class="section-card card">
+    <view class="section-label">选择时间段</view>
+    <scroll-view class="timeslot-scroll" scroll-x enable-flex>
+      <view class="timeslot-list">
+        <view
+          wx:for="{{timeSlots}}"
+          wx:key="*this"
+          class="timeslot-item {{activeTimeSlot === item ? 'active' : ''}}"
+          data-slot="{{item}}"
+          bindtap="selectTimeSlot"
+        >
+          {{item}}
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 教室列表 -->
+  <view class="section-card card">
+    <view class="section-label flex-between">
+      <text>{{activeBuilding}} - 教室列表</text>
+      <text class="reserve-link" bindtap="goReservations">我的预约 ›</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view wx:if="{{loading}}" class="loading">
+      <text>加载中...</text>
+    </view>
+
+    <!-- 教室列表 -->
+    <view wx:else class="classroom-list">
+      <view
+        wx:for="{{classrooms}}"
+        wx:key="_id"
+        class="classroom-item"
+        data-room="{{item}}"
+        bindtap="reserveClassroom"
+      >
+        <view class="room-info">
+          <text class="room-no">{{item.roomNo}}</text>
+          <text class="room-capacity">容量：{{item.capacity || '未知'}}人</text>
+        </view>
+        <view class="room-status {{item.status === '空闲' ? 'free' : 'busy'}}">
+          <text class="status-dot"></text>
+          <text class="status-text">{{item.status}}</text>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view wx:if="{{classrooms.length === 0}}" class="empty-state">
+        <text>暂无教室信息</text>
+      </view>
+    </view>
   </view>
 </view>

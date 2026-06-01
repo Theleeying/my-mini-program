@@ -1,1 +1,124 @@
-page { background-color: var(--color-bg); }
+/** pages/studyroom/reservations/reservations.wxss — 预约记录样式 **/
+
+.page-reservations {
+  min-height: 100vh;
+}
+
+/* ===== Tab 切换 ===== */
+.tab-bar {
+  display: flex;
+  background-color: var(--color-white);
+  border-bottom: 2rpx solid var(--color-border);
+}
+
+.tab-item {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+  position: relative;
+}
+
+.tab-item.active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 4rpx;
+  background-color: var(--color-primary);
+  border-radius: 2rpx;
+}
+
+/* ===== 加载中 ===== */
+.loading {
+  text-align: center;
+  padding: 200rpx 0;
+  color: var(--color-text-light);
+  font-size: 28rpx;
+}
+
+/* ===== 预约列表 ===== */
+.list-section {
+  padding: 20rpx;
+}
+
+.reservation-card {
+  margin-bottom: 16rpx;
+}
+
+.reservation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.reservation-room {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.reservation-status {
+  font-size: 24rpx;
+  padding: 6rpx 20rpx;
+  border-radius: 24rpx;
+}
+
+.reservation-status.booked {
+  color: var(--color-primary);
+  background-color: #E8F5E9;
+}
+
+.reservation-status.done {
+  color: var(--color-text-light);
+  background-color: var(--color-bg);
+}
+
+.reservation-status.cancelled {
+  color: var(--color-danger);
+  background-color: #FFEBEE;
+}
+
+.reservation-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin-bottom: 16rpx;
+}
+
+.info-item {
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+}
+
+/* ===== 操作按钮 ===== */
+.reservation-actions {
+  display: flex;
+  gap: 16rpx;
+  border-top: 2rpx solid var(--color-border);
+  padding-top: 16rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 64rpx;
+  line-height: 64rpx;
+  font-size: 26rpx;
+  padding: 0;
+  border-radius: 32rpx;
+}
+
+.action-btn.cancel {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
