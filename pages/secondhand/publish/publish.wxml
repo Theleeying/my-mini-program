@@ -1,2 +1,120 @@
-<!--pages/secondhand/publish/publish.wxml — 发布商品（占位）-->
-<view class="container"><view class="empty-state"><text>发布商品页 — 成员B</text></view></view>
+<!-- 发布商品页 -->
+<view class="page">
+
+  <!-- 图片上传区域 -->
+  <view class="card">
+    <view class="form-label">商品图片 <text class="required">*</text></view>
+    <view class="image-list">
+      <view class="image-item" wx:for="{{images}}" wx:key="*this">
+        <image class="image-preview" src="{{item}}" mode="aspectFill" data-index="{{index}}" bindtap="onPreviewImage"/>
+        <view class="image-delete" data-index="{{index}}" catchtap="onDeleteImage">✕</view>
+      </view>
+      <view class="image-add" wx:if="{{images.length < maxImages}}" bindtap="onChooseImage">
+        <text class="image-add-icon">+</text>
+        <text class="image-add-text">{{images.length}}/{{maxImages}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 商品信息 -->
+  <view class="card">
+    <!-- 商品名称 -->
+    <view class="form-item">
+      <view class="form-label">商品名称 <text class="required">*</text></view>
+      <input class="form-input" 
+             placeholder="输入商品名称，例如：MacBook Pro 2023" 
+             value="{{title}}"
+             bindinput="onTitleInput"
+             maxlength="60"/>
+    </view>
+
+    <!-- 商品分类 -->
+    <view class="form-item">
+      <view class="form-label">商品分类 <text class="required">*</text></view>
+      <picker mode="selector" 
+              range="{{categories}}" 
+              value="{{categoryIndex}}"
+              bindchange="onCategoryChange">
+        <view class="form-picker {{category ? '' : 'placeholder'}}">
+          {{category ? categories[categoryIndex] : '请选择分类'}}
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 价格 -->
+    <view class="form-item">
+      <view class="form-label">价格 <text class="required">*</text></view>
+      <view class="price-input-wrap">
+        <text class="price-symbol">¥</text>
+        <input class="form-input price-input" 
+               type="digit"
+               placeholder="0.00" 
+               value="{{price}}"
+               bindinput="onPriceInput"/>
+      </view>
+    </view>
+
+    <!-- 商品成色 -->
+    <view class="form-item">
+      <view class="form-label">商品成色 <text class="required">*</text></view>
+      <picker mode="selector" 
+              range="{{conditions}}" 
+              value="{{conditionIndex}}"
+              bindchange="onConditionChange">
+        <view class="form-picker {{condition ? '' : 'placeholder'}}">
+          {{condition ? conditions[conditionIndex] : '请选择成色'}}
+          <text class="picker-arrow">›</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 商品描述 -->
+    <view class="form-item">
+      <view class="form-label">商品描述 <text class="required">*</text></view>
+      <textarea class="form-textarea"
+                placeholder="详细描述商品的使用情况、购买时间、配件等信息..."
+                value="{{description}}"
+                bindinput="onDescriptionInput"
+                maxlength="500"
+                auto-height/>
+      <text class="char-count">{{description.length}}/500</text>
+    </view>
+  </view>
+
+  <!-- 联系信息 -->
+  <view class="card">
+    <view class="card-title">联系信息</view>
+
+    <view class="form-item">
+      <view class="form-label">联系方式 <text class="required">*</text></view>
+      <input class="form-input" 
+             placeholder="手机号或微信号" 
+             value="{{contact}}"
+             bindinput="onContactInput"
+             maxlength="40"/>
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">交易地点</view>
+      <input class="form-input" 
+             placeholder="例如：XX校区XX宿舍楼（选填）" 
+             value="{{location}}"
+             bindinput="onLocationInput"
+             maxlength="100"/>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button class="submit-btn {{isSubmitting ? 'disabled' : ''}}" 
+            bindtap="onSubmit"
+            disabled="{{isSubmitting}}">
+      {{isSubmitting ? '发布中...' : '发布商品'}}
+    </button>
+  </view>
+
+  <!-- 底部安全区 -->
+  <view style="height:60rpx;"></view>
+
+</view>

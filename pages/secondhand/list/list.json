@@ -1,4 +1,6 @@
 {
-  "usingComponents": {},
-  "navigationBarTitleText": "二手交易"
+  "navigationBarTitleText": "二手交易",
+  "enablePullDownRefresh": true,
+  "onReachBottomDistance": 80,
+  "usingComponents": {}
 }
