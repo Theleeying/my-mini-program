@@ -281,3 +281,30 @@
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+/* ===== 分类标签 ===== */
+.category-section {
+  padding: 0 20rpx;
+}
+
+.category-scroll {
+  white-space: nowrap;
+}
+
+.category-tags {
+  display: inline-flex;
+  gap: 16rpx;
+  padding: 10rpx 0 20rpx;
+}
+
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 16rpx 28rpx;
+  background: var(--color-white);
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  color: var(--color-text);
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+  flex-shrink: 0;
+}

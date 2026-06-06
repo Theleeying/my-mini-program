@@ -1,0 +1,91 @@
+/** pages/user/my-reservations/my-reservations.wxss — 我的预约样式 **/
+
+.page-my-reservations {
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+/* ===== 预约列表 ===== */
+.reservation-list {
+  padding: 20rpx;
+}
+
+.reservation-item {
+  margin-bottom: 20rpx;
+  padding: 30rpx;
+}
+
+.res-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.res-room {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.res-status {
+  font-size: 24rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.status-active {
+  background: #E8F5E9;
+  color: #4CAF50;
+}
+
+.status-cancelled {
+  background: #F5F5F5;
+  color: #9E9E9E;
+}
+
+/* ===== 信息区 ===== */
+.res-info {
+  display: flex;
+  gap: 40rpx;
+  margin-bottom: 24rpx;
+}
+
+.res-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.res-label {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+}
+
+.res-value {
+  font-size: 28rpx;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* ===== 底部操作 ===== */
+.res-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--color-border);
+}
+
+.res-time {
+  font-size: 22rpx;
+  color: var(--color-text-light);
+}
+
+.btn-cancel {
+  font-size: 24rpx;
+  color: var(--color-danger);
+  padding: 10rpx 24rpx;
+  border: 1rpx solid var(--color-danger);
+  border-radius: 8rpx;
+}

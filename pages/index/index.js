@@ -10,7 +10,14 @@ Page({
       { name: '更多服务', icon: '🔍', url: '/pages/user/index/index' }
     ],
     hotList: [],
-    searchKeyword: ''
+    searchKeyword: '',
+    categories: [
+      { name: '书籍', icon: '📚' },
+      { name: '电子产品', icon: '💻' },
+      { name: '生活用品', icon: '🏠' },
+      { name: '服饰', icon: '👗' },
+      { name: '其他', icon: '📌' }
+    ]
   },
 
   onLoad: function () {
@@ -188,6 +195,16 @@ Page({
     if (id) {
       wx.navigateTo({
         url: '/pages/common/announcement-detail/announcement-detail?id=' + id
+      })
+    }
+  },
+
+  // 分类标签点击 → 跳转搜索结果（分类浏览）
+  onCategoryTap: function (e) {
+    var category = e.currentTarget.dataset.category
+    if (category) {
+      wx.navigateTo({
+        url: '/pages/common/search-results/search-results?category=' + encodeURIComponent(category)
       })
     }
   },

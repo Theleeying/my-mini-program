@@ -31,6 +31,27 @@
   line-height: 60rpx;
 }
 
+/* ===== 分类上下文 ===== */
+.context-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 30rpx;
+  background: var(--color-white);
+  border-bottom: 1rpx solid var(--color-border);
+}
+
+.context-tag {
+  font-size: 26rpx;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.context-text {
+  font-size: 22rpx;
+  color: var(--color-text-light);
+}
+
 /* ===== 结果 Tab ===== */
 .result-tabs {
   display: flex;
