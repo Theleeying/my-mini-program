@@ -1,1 +1,180 @@
-page { background-color: var(--color-bg); }
+/** pages/studyroom/index/index.wxss — 自习助手首页样式 **/
+
+.page-studyroom {
+  min-height: 100vh;
+  padding: 20rpx;
+}
+
+/* ===== 日期选择 ===== */
+.date-section {
+  margin-bottom: 20rpx;
+}
+
+.date-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.date-picker {
+  display: flex;
+  align-items: center;
+}
+
+.date-text {
+  font-size: 28rpx;
+  color: var(--color-primary);
+  margin-right: 8rpx;
+}
+
+.date-arrow {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+}
+
+/* ===== 通用卡片 ===== */
+.section-card {
+  margin-bottom: 20rpx;
+}
+
+.section-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 20rpx;
+}
+
+/* ===== 教学楼滚动 ===== */
+.building-scroll {
+  white-space: nowrap;
+}
+
+.building-list {
+  display: flex;
+}
+
+.building-item {
+  display: inline-block;
+  padding: 14rpx 32rpx;
+  margin-right: 16rpx;
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg);
+  border-radius: 30rpx;
+}
+
+.building-item.active {
+  color: var(--color-white);
+  background-color: var(--color-primary);
+}
+
+/* ===== 时间段滚动 ===== */
+.timeslot-scroll {
+  white-space: nowrap;
+}
+
+.timeslot-list {
+  display: flex;
+}
+
+.timeslot-item {
+  display: inline-block;
+  padding: 14rpx 32rpx;
+  margin-right: 16rpx;
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg);
+  border-radius: 30rpx;
+}
+
+.timeslot-item.active {
+  color: var(--color-white);
+  background-color: var(--color-primary);
+}
+
+/* ===== 加载中 ===== */
+.loading {
+  text-align: center;
+  padding: 60rpx 0;
+  color: var(--color-text-light);
+  font-size: 28rpx;
+}
+
+/* ===== 教室列表 ===== */
+.classroom-list {
+  border-top: 2rpx solid var(--color-border);
+}
+
+.classroom-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx 0;
+  border-bottom: 2rpx solid var(--color-border);
+}
+
+.classroom-item:last-child {
+  border-bottom: none;
+}
+
+.room-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.room-no {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 6rpx;
+}
+
+.room-capacity {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+}
+
+.room-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  margin-right: 8rpx;
+}
+
+.room-status.free .status-dot {
+  background-color: var(--color-primary);
+}
+
+.room-status.busy .status-dot {
+  background-color: var(--color-danger);
+}
+
+.status-text {
+  font-size: 28rpx;
+}
+
+.room-status.free .status-text {
+  color: var(--color-primary);
+}
+
+.room-status.busy .status-text {
+  color: var(--color-danger);
+}
+
+/* ===== 预约链接 ===== */
+.reserve-link {
+  font-size: 26rpx;
+  color: var(--color-primary);
+  font-weight: normal;
+}

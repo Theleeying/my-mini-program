@@ -1,8 +1,102 @@
-<!--pages/lostfound/list/list.wxml — 失物招领列表（占位）-->
-<view class="container">
-  <view class="empty-state">
-    <text style="font-size: 80rpx;">🎯</text>
-    <text style="margin-top: 20rpx;">失物招领模块</text>
-    <text style="font-size: 24rpx; color: #999; margin-top: 10rpx;">由成员C 负责开发</text>
+<!--pages/lostfound/list/list.wxml — 失物招领列表-->
+<view class="page-lost-list">
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-box">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="搜索失物或招领信息..."
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+      />
+    </view>
+  </view>
+
+  <!-- 失物/招领切换 -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{activeTab === 0 ? 'active' : ''}}"
+      data-index="0"
+      bindtap="onTabChange"
+    >
+      <text>寻失物</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 1 ? 'active' : ''}}"
+      data-index="1"
+      bindtap="onTabChange"
+    >
+      <text>招领</text>
+    </view>
+  </view>
+
+  <!-- 分类筛选 -->
+  <scroll-view class="category-scroll" scroll-x enable-flex>
+    <view class="category-list">
+      <view
+        wx:for="{{categories}}"
+        wx:key="*this"
+        class="category-item {{activeCategory === item ? 'active' : ''}}"
+        data-category="{{item}}"
+        bindtap="onCategoryChange"
+      >
+        {{item}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 列表 -->
+  <view wx:else class="list-section">
+    <view
+      wx:for="{{list}}"
+      wx:key="_id"
+      class="list-item card"
+      data-id="{{item._id}}"
+      bindtap="onItemTap"
+    >
+      <view class="item-row">
+        <image
+          wx:if="{{item.images && item.images.length}}"
+          class="item-thumb"
+          src="{{item.images[0]}}"
+          mode="aspectFill"
+        />
+        <view wx:else class="item-thumb-placeholder">
+          <text>{{item.type === '失物' ? '🔍' : '📢'}}</text>
+        </view>
+        <view class="item-info flex-1">
+          <view class="item-title-row">
+            <text class="item-title">{{item.title}}</text>
+            <text class="item-type-tag {{item.type === '失物' ? 'tag-lost' : 'tag-found'}}">
+              {{item.type}}
+            </text>
+          </view>
+          <text class="item-desc">{{item.description || ''}}</text>
+          <view class="item-meta">
+            <text class="item-category">{{item.category || '其他'}}</text>
+            <text class="item-time">{{item.createTime || ''}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{list.length === 0}}" class="empty-state">
+      <text>暂无相关信息</text>
+    </view>
+  </view>
+
+  <!-- 悬浮发布按钮 -->
+  <view class="publish-fab" bindtap="onPublish">
+    <text>+</text>
   </view>
 </view>

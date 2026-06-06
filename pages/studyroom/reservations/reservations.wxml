@@ -1,1 +1,50 @@
-<view class="container"><view class="empty-state"><text>预约记录 — 成员C</text></view></view>
+<!--pages/studyroom/reservations/reservations.wxml — 预约记录-->
+<view class="page-reservations">
+
+  <!-- Tab 切换 -->
+  <view class="tab-bar">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="*this"
+      class="tab-item {{activeTab === index ? 'active' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 预约列表 -->
+  <view wx:else class="list-section">
+    <view
+      wx:for="{{reservations}}"
+      wx:key="_id"
+      class="reservation-card card"
+    >
+      <view class="reservation-header">
+        <text class="reservation-room">{{item.building}} {{item.roomNo}}</text>
+        <text class="reservation-status {{item.status === '已预约' ? 'booked' : item.status === '已完成' ? 'done' : 'cancelled'}}">
+          {{item.status}}
+        </text>
+      </view>
+      <view class="reservation-info">
+        <text class="info-item">日期：{{item.date}}</text>
+        <text class="info-item">时间：{{item.timeSlot}}</text>
+      </view>
+      <view class="reservation-actions" wx:if="{{item.status === '已预约'}}">
+        <button class="btn-outline action-btn" data-id="{{item._id}}" bindtap="completeReservation">完成自习</button>
+        <button class="btn-outline action-btn cancel" data-id="{{item._id}}" bindtap="cancelReservation">取消预约</button>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{reservations.length === 0}}" class="empty-state">
+      <text>暂无预约记录</text>
+    </view>
+  </view>
+</view>

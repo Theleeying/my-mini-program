@@ -1,1 +1,89 @@
-<view class="container"><view class="empty-state"><text>失物详情页 — 成员C</text></view></view>
+<!--pages/lostfound/detail/detail.wxml — 失物招领详情-->
+<view class="page-lost-detail">
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 详情内容 -->
+  <view wx:else>
+    <!-- 图片轮播 -->
+    <swiper
+      class="detail-swiper"
+      indicator-dots="{{detail.images && detail.images.length > 1}}"
+      indicator-color="rgba(255,255,255,0.5)"
+      indicator-active-color="#4CAF50"
+      autoplay="{{false}}"
+      circular
+    >
+      <block wx:if="{{detail.images && detail.images.length}}">
+        <swiper-item wx:for="{{detail.images}}" wx:key="*this">
+          <image class="swiper-image" src="{{item}}" mode="aspectFill" />
+        </swiper-item>
+      </block>
+      <swiper-item wx:else>
+        <view class="swiper-placeholder">
+          <text>{{detail.type === '失物' ? '🔍' : '📢'}}</text>
+        </view>
+      </swiper-item>
+    </swiper>
+
+    <!-- 信息卡片 -->
+    <view class="info-card card">
+      <view class="info-header">
+        <text class="type-tag {{detail.type === '失物' ? 'tag-lost' : 'tag-found'}}">
+          {{detail.type}}
+        </text>
+        <text class="status-tag {{detail.status === '已找到' || detail.status === '已认领' ? 'resolved' : ''}}">
+          {{detail.status || '待处理'}}
+        </text>
+      </view>
+
+      <text class="detail-title">{{detail.title}}</text>
+      <text class="detail-category">{{detail.category || '其他'}}</text>
+      <text class="detail-time">{{detail.createTime || ''}}</text>
+
+      <view class="desc-section">
+        <text class="desc-label">详细描述</text>
+        <text class="desc-content">{{detail.description || '暂无描述'}}</text>
+      </view>
+    </view>
+
+    <!-- 联系方式 -->
+    <view class="contact-card card">
+      <view class="contact-header" bindtap="toggleContact">
+        <text class="contact-label">联系方式</text>
+        <text class="contact-arrow">{{showContact ? '收起' : '展开'}}</text>
+      </view>
+      <view wx:if="{{showContact}}" class="contact-body">
+        <view class="contact-row">
+          <text class="contact-key">联系人：</text>
+          <text class="contact-val">{{detail.contactName || '未填写'}}</text>
+        </view>
+        <view class="contact-row">
+          <text class="contact-key">电话：</text>
+          <text class="contact-val phone" bindtap="callPhone">{{detail.contactPhone || '未填写'}}</text>
+        </view>
+        <view class="contact-row">
+          <text class="contact-key">地点：</text>
+          <text class="contact-val">{{detail.location || '未填写'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-bar">
+      <button
+        class="btn-primary action-btn"
+        wx:if="{{detail.status !== '已找到' && detail.status !== '已认领'}}"
+        bindtap="markResolved"
+      >
+        {{detail.type === '失物' ? '标记为已找到' : '标记为已认领'}}
+      </button>
+      <button class="btn-outline action-btn" bindtap="callPhone">
+        联系TA
+      </button>
+    </view>
+  </view>
+</view>

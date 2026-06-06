@@ -1,1 +1,221 @@
-page { background-color: var(--color-bg); }
+/** pages/lostfound/list/list.wxss — 失物招领列表样式 **/
+
+.page-lost-list {
+  min-height: 100vh;
+  padding-bottom: 120rpx;
+}
+
+/* ===== 搜索栏 ===== */
+.search-bar {
+  padding: 20rpx 30rpx;
+  background-color: var(--color-primary);
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-white);
+  border-radius: 40rpx;
+  padding: 12rpx 24rpx;
+}
+
+.search-icon {
+  margin-right: 12rpx;
+  font-size: 30rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 26rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+}
+
+/* ===== Tab 切换 ===== */
+.tab-bar {
+  display: flex;
+  background-color: var(--color-white);
+  border-bottom: 2rpx solid var(--color-border);
+}
+
+.tab-item {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: var(--color-text-secondary);
+  position: relative;
+}
+
+.tab-item.active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background-color: var(--color-primary);
+  border-radius: 2rpx;
+}
+
+/* ===== 分类滚动 ===== */
+.category-scroll {
+  white-space: nowrap;
+  background-color: var(--color-white);
+  padding: 16rpx 20rpx;
+  border-bottom: 2rpx solid var(--color-border);
+}
+
+.category-list {
+  display: flex;
+}
+
+.category-item {
+  display: inline-block;
+  padding: 10rpx 28rpx;
+  margin-right: 16rpx;
+  font-size: 24rpx;
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg);
+  border-radius: 30rpx;
+}
+
+.category-item.active {
+  color: var(--color-white);
+  background-color: var(--color-primary);
+}
+
+/* ===== 加载中 ===== */
+.loading {
+  text-align: center;
+  padding: 100rpx 0;
+  color: var(--color-text-light);
+  font-size: 28rpx;
+}
+
+/* ===== 列表 ===== */
+.list-section {
+  padding: 20rpx;
+}
+
+.list-item {
+  margin-bottom: 16rpx;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+}
+
+.item-thumb {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.item-thumb-placeholder {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 12rpx;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+  background-color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+}
+
+.item-info {
+  min-width: 0;
+}
+
+.item-title-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.item-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  margin-right: 12rpx;
+}
+
+.item-type-tag {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  flex-shrink: 0;
+}
+
+.tag-lost {
+  background-color: #FFEBEE;
+  color: var(--color-danger);
+}
+
+.tag-found {
+  background-color: #E8F5E9;
+  color: var(--color-primary);
+}
+
+.item-desc {
+  font-size: 24rpx;
+  color: var(--color-text-light);
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 8rpx;
+}
+
+.item-meta {
+  display: flex;
+  align-items: center;
+}
+
+.item-category {
+  font-size: 22rpx;
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  padding: 2rpx 12rpx;
+  border-radius: 6rpx;
+  margin-right: 16rpx;
+}
+
+.item-time {
+  font-size: 22rpx;
+  color: var(--color-text-light);
+}
+
+/* ===== 悬浮发布按钮 ===== */
+.publish-fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 100rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  box-shadow: 0 4rpx 20rpx rgba(76, 175, 80, 0.4);
+  z-index: 100;
+}
