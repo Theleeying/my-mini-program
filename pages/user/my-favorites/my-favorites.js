@@ -1,4 +1,4 @@
-// pages/user/my-favorites/my-favorites.js — 我的收藏（商品 + 失物）
+// pages/user/my-favorites/my-favorites.js — 我的收藏
 Page({
   data: {
     activeTab: 0,

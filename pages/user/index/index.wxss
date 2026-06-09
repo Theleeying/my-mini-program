@@ -80,7 +80,7 @@
   display: block;
 }
 
-.arrow {
+.user-header .arrow {
   font-size: 40rpx;
   color: rgba(255,255,255,0.7);
 }
@@ -143,18 +143,13 @@
   margin-right: 20rpx;
 }
 
-.menu-text {
-  display: flex;
-  flex-direction: column;
-}
-
 .menu-title {
+  flex: 1;
   font-size: 30rpx;
   color: var(--color-text);
 }
 
-.menu-desc {
-  font-size: 24rpx;
-  color: var(--color-text-light);
-  margin-top: 4rpx;
+.menu-item .arrow {
+  font-size: 36rpx;
+  color: #ccc;
 }

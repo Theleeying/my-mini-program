@@ -9,8 +9,7 @@
   <!-- 空状态 -->
   <view wx:elif="{{list.length === 0}}" class="empty-state">
     <text style="font-size: 80rpx;">📅</text>
-    <text style="margin-top: 24rpx;">暂无预约记录</text>
-    <text style="font-size: 24rpx; color: #999; margin-top: 12rpx;">去自习助手预约教室吧</text>
+    <text style="margin-top: 24rpx;">暂无预约</text>
   </view>
 
   <!-- 预约列表 -->

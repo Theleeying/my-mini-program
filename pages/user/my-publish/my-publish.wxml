@@ -21,7 +21,7 @@
 
   <!-- 空状态 -->
   <view wx:elif="{{list.length === 0}}" class="empty-state">
-    <text>还没有发布任何信息</text>
+    <text>暂无发布</text>
   </view>
 
   <!-- 列表 -->

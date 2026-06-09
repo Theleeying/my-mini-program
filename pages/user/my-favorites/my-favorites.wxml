@@ -22,12 +22,7 @@
   <!-- 空状态 -->
   <view wx:elif="{{list.length === 0}}" class="empty-state">
     <text>{{activeTab === 0 ? '📦' : '🎯'}}</text>
-    <text style="margin-top: 20rpx;">
-      {{activeTab === 0 ? '还没有收藏任何商品' : '还没有收藏任何失物信息'}}
-    </text>
-    <text style="font-size: 24rpx; margin-top: 10rpx;">
-      {{activeTab === 0 ? '去二手市场看看吧' : '去失物招领看看吧'}}
-    </text>
+    <text style="margin-top: 20rpx;">暂无收藏</text>
   </view>
 
   <!-- 列表 -->

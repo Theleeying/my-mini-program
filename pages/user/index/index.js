@@ -8,12 +8,12 @@ Page({
       favoriteCount: 0
     },
     menuList: [
-      { icon: '📋', title: '我的发布', desc: '查看我发布的二手和失物信息', url: '/pages/user/my-publish/my-publish' },
-      { icon: '⭐', title: '我的收藏', desc: '收藏的商品和失物信息', url: '/pages/user/my-favorites/my-favorites' },
-      { icon: '📅', title: '我的预约', desc: '自习室预约记录', url: '/pages/user/my-reservations/my-reservations' },
-      { icon: '💬', title: '联系客服', desc: '反馈问题或建议', url: '' },
-      { icon: 'ℹ️', title: '关于我们', desc: '了解校易通', url: '/pages/common/about/about' },
-      { icon: '⚙️', title: '设置', desc: '个人偏好设置', url: '/pages/user/settings/settings' }
+      { icon: '📋', title: '我的发布', url: '/pages/user/my-publish/my-publish' },
+      { icon: '⭐', title: '我的收藏', url: '/pages/user/my-favorites/my-favorites' },
+      { icon: '📅', title: '我的预约', url: '/pages/user/my-reservations/my-reservations' },
+      { icon: '💬', title: '联系客服', url: '' },
+      { icon: 'ℹ', title: '关于我们', url: '/pages/common/about/about' },
+      { icon: '⚙', title: '设置', url: '/pages/user/settings/settings' }
     ]
   },
 

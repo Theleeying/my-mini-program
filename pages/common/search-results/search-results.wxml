@@ -8,7 +8,7 @@
       <input
         class="search-input"
         type="text"
-        placeholder="{{category ? '在「' + category + '」中搜索...' : '搜索二手或失物...'}}"
+        placeholder="{{category ? '在「' + category + '」中搜索...' : '搜索...'}}"
         value="{{keyword}}"
         bindconfirm="onSearchConfirm"
       />
