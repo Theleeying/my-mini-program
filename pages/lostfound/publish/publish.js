@@ -1,12 +1,11 @@
 // pages/lostfound/publish/publish.js — 发布失物/招领信息
 Page({
   data: {
-    type: '失物',
+    type: 'lost',
     title: '',
     category: '证件',
     description: '',
-    contactName: '',
-    contactPhone: '',
+    contactInfo: '',
     location: '',
     images: [],
     uploadCount: 0,
@@ -37,14 +36,9 @@ Page({
     this.setData({ description: e.detail.value })
   },
 
-  // 输入联系人
-  onContactNameInput: function (e) {
-    this.setData({ contactName: e.detail.value })
-  },
-
-  // 输入电话
-  onContactPhoneInput: function (e) {
-    this.setData({ contactPhone: e.detail.value })
+  // 输入联系方式
+  onContactInfoInput: function (e) {
+    this.setData({ contactInfo: e.detail.value })
   },
 
   // 输入地点
@@ -124,8 +118,8 @@ Page({
       wx.showToast({ title: '请输入详细描述', icon: 'none' })
       return
     }
-    if (!that.data.contactPhone.trim()) {
-      wx.showToast({ title: '请输入联系电话', icon: 'none' })
+    if (!that.data.contactInfo.trim()) {
+      wx.showToast({ title: '请输入联系方式', icon: 'none' })
       return
     }
 
@@ -150,8 +144,7 @@ Page({
             category: that.data.category,
             description: that.data.description.trim(),
             images: fileIDs,
-            contactName: that.data.contactName.trim(),
-            contactPhone: that.data.contactPhone.trim(),
+            contactInfo: that.data.contactInfo.trim(),
             location: that.data.location.trim(),
             status: 'active',
             createTime: db.serverDate()

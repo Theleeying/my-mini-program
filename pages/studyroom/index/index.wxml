@@ -75,9 +75,9 @@
           <text class="room-no">{{item.roomNo}}</text>
           <text class="room-capacity">容量：{{item.capacity || '未知'}}人</text>
         </view>
-        <view class="room-status {{item.status === '空闲' ? 'free' : 'busy'}}">
+        <view class="room-status {{item.status === 'free' ? 'free' : 'busy'}}">
           <text class="status-dot"></text>
-          <text class="status-text">{{item.status}}</text>
+          <text class="status-text">{{item.status === 'free' ? '空闲' : '占用'}}</text>
         </view>
       </view>
 

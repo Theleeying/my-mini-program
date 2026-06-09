@@ -3,8 +3,8 @@ Page({
   data: {
     loading: true,
     reservations: [],
-    activeTab: 0, // 0=全部, 1=已预约, 2=已完成, 3=已取消
-    tabs: ['全部', '已预约', '已完成', '已取消']
+    activeTab: 0, // 0=全部, 1=已预约, 2=已取消
+    tabs: ['全部', '已预约', '已取消']
   },
 
   onLoad: function () {
@@ -13,6 +13,13 @@ Page({
 
   onShow: function () {
     this.loadReservations()
+  },
+
+  onPullDownRefresh: function () {
+    var that = this
+    that.loadReservations()
+      .then(function () { wx.stopPullDownRefresh() })
+      .catch(function () { wx.stopPullDownRefresh() })
   },
 
   // 切换标签
@@ -28,25 +35,60 @@ Page({
     var that = this
     var app = getApp()
 
-    app.ensureOpenid().then(function (openid) {
+    return app.ensureOpenid().then(function (openid) {
       var db = wx.cloud.database()
-      var condition = { userId: openid }
+      var condition = { _openid: openid }
 
-      // 按状态筛选
+      // 按状态筛选：0=全部, 1=已预约(active), 2=已取消(cancelled)
       if (that.data.activeTab === 1) {
-        condition.status = '已预约'
+        condition.status = 'active'
       } else if (that.data.activeTab === 2) {
-        condition.status = '已完成'
-      } else if (that.data.activeTab === 3) {
-        condition.status = '已取消'
+        condition.status = 'cancelled'
       }
 
       return db.collection('reservations')
         .where(condition)
         .orderBy('createTime', 'desc')
         .get()
-    }).then(function (res) {
-      that.setData({ reservations: res.data, loading: false })
+        .then(function (res) {
+          var list = res.data
+
+          if (list.length === 0) {
+            that.setData({ reservations: [], loading: false })
+            return
+          }
+
+          // 收集所有 classroomId 查询教室信息
+          var classroomIds = {}
+          list.forEach(function (r) {
+            if (r.classroomId) classroomIds[r.classroomId] = true
+          })
+          var ids = Object.keys(classroomIds)
+
+          if (ids.length === 0) {
+            that.setData({ reservations: list, loading: false })
+            return
+          }
+
+          return db.collection('classrooms')
+            .where({ _id: db.command.in(ids) })
+            .get()
+            .then(function (roomRes) {
+              var roomMap = {}
+              roomRes.data.forEach(function (room) {
+                roomMap[room._id] = room
+              })
+
+              var result = list.map(function (item) {
+                var room = roomMap[item.classroomId]
+                return Object.assign({}, item, {
+                  roomName: room ? room.building + ' ' + room.roomNo : (item.building + ' ' + item.roomNo)
+                })
+              })
+
+              that.setData({ reservations: result, loading: false })
+            })
+        })
     }).catch(function (err) {
       console.warn('加载预约记录失败：', err)
       that.setData({ reservations: [], loading: false })
@@ -67,7 +109,7 @@ Page({
           var db = wx.cloud.database()
           db.collection('reservations').doc(id)
             .update({
-              data: { status: '已取消' }
+              data: { status: 'cancelled' }
             })
             .then(function () {
               wx.hideLoading()
@@ -83,7 +125,7 @@ Page({
     })
   },
 
-  // 完成预约
+  // 完成自习（将状态改为 cancelled 表示该时段预约结束）
   completeReservation: function (e) {
     var id = e.currentTarget.dataset.id
     var that = this
@@ -97,7 +139,7 @@ Page({
           var db = wx.cloud.database()
           db.collection('reservations').doc(id)
             .update({
-              data: { status: '已完成' }
+              data: { status: 'cancelled' }
             })
             .then(function () {
               wx.hideLoading()
