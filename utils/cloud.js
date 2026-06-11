@@ -28,31 +28,23 @@ function getGoodsList(params) {
   const { pageNum = 1, pageSize = 20, category = '', keyword = '', sortBy = 'time' } = params;
 
   return new Promise((resolve, reject) => {
-    let query = db.collection(COLLECTIONS.GOODS);
-
-    // 只查询未售出的商品
-    query = query.where({
+    // 一次性构建所有查询条件（避免多次 .where() 互相覆盖）
+    const conditions = {
       status: _.neq('sold')
-    });
+    };
 
-    // 分类筛选
     if (category) {
-      query = query.where({
-        ...query._where,
-        category: category
+      conditions.category = category;
+    }
+
+    if (keyword) {
+      conditions.title = db.RegExp({
+        regexp: keyword,
+        options: 'i'
       });
     }
 
-    // 关键词搜索
-    if (keyword) {
-      query = query.where({
-        ...query._where,
-        title: db.RegExp({
-          regexp: keyword,
-          options: 'i'
-        })
-      });
-    }
+    let query = db.collection(COLLECTIONS.GOODS).where(conditions);
 
     // 排序
     switch (sortBy) {
