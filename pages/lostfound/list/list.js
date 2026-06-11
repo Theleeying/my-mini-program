@@ -40,9 +40,9 @@ Page({
 
     // 按类型筛选
     if (that.data.activeTab === 0) {
-      condition.type = '失物'
+      condition.type = 'lost'
     } else {
-      condition.type = '招领'
+      condition.type = 'found'
     }
 
     // 按分类筛选

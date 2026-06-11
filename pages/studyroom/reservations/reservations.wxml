@@ -27,16 +27,16 @@
       class="reservation-card card"
     >
       <view class="reservation-header">
-        <text class="reservation-room">{{item.building}} {{item.roomNo}}</text>
-        <text class="reservation-status {{item.status === '已预约' ? 'booked' : item.status === '已完成' ? 'done' : 'cancelled'}}">
-          {{item.status}}
+        <text class="reservation-room">{{item.roomName || item.building + ' ' + item.roomNo}}</text>
+        <text class="reservation-status {{item.status === 'active' ? 'booked' : 'cancelled'}}">
+          {{item.status === 'active' ? '已预约' : '已取消'}}
         </text>
       </view>
       <view class="reservation-info">
         <text class="info-item">日期：{{item.date}}</text>
         <text class="info-item">时间：{{item.timeSlot}}</text>
       </view>
-      <view class="reservation-actions" wx:if="{{item.status === '已预约'}}">
+      <view class="reservation-actions" wx:if="{{item.status === 'active'}}">
         <button class="btn-outline action-btn" data-id="{{item._id}}" bindtap="completeReservation">完成自习</button>
         <button class="btn-outline action-btn cancel" data-id="{{item._id}}" bindtap="cancelReservation">取消预约</button>
       </view>

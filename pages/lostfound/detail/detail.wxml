@@ -24,7 +24,7 @@
       </block>
       <swiper-item wx:else>
         <view class="swiper-placeholder">
-          <text>{{detail.type === '失物' ? '🔍' : '📢'}}</text>
+          <text>{{detail.type === 'lost' ? '🔍' : '📢'}}</text>
         </view>
       </swiper-item>
     </swiper>
@@ -32,11 +32,11 @@
     <!-- 信息卡片 -->
     <view class="info-card card">
       <view class="info-header">
-        <text class="type-tag {{detail.type === '失物' ? 'tag-lost' : 'tag-found'}}">
-          {{detail.type}}
+        <text class="type-tag {{detail.type === 'lost' ? 'tag-lost' : 'tag-found'}}">
+          {{detail.type === 'lost' ? '寻失物' : '招领'}}
         </text>
-        <text class="status-tag {{detail.status === '已找到' || detail.status === '已认领' ? 'resolved' : ''}}">
-          {{detail.status || '待处理'}}
+        <text class="status-tag {{detail.status === 'resolved' ? 'resolved' : ''}}">
+          {{detail.status === 'resolved' ? '已解决' : '进行中'}}
         </text>
       </view>
 
@@ -58,12 +58,8 @@
       </view>
       <view wx:if="{{showContact}}" class="contact-body">
         <view class="contact-row">
-          <text class="contact-key">联系人：</text>
-          <text class="contact-val">{{detail.contactName || '未填写'}}</text>
-        </view>
-        <view class="contact-row">
-          <text class="contact-key">电话：</text>
-          <text class="contact-val phone" bindtap="callPhone">{{detail.contactPhone || '未填写'}}</text>
+          <text class="contact-key">联系方式：</text>
+          <text class="contact-val phone" bindtap="callPhone">{{detail.contactInfo || '未填写'}}</text>
         </view>
         <view class="contact-row">
           <text class="contact-key">地点：</text>
@@ -76,10 +72,10 @@
     <view class="action-bar">
       <button
         class="btn-primary action-btn"
-        wx:if="{{detail.status !== '已找到' && detail.status !== '已认领'}}"
+        wx:if="{{detail.status !== 'resolved'}}"
         bindtap="markResolved"
       >
-        {{detail.type === '失物' ? '标记为已找到' : '标记为已认领'}}
+        标记为已解决
       </button>
       <button class="btn-outline action-btn" bindtap="callPhone">
         联系TA
