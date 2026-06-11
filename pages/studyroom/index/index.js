@@ -1,10 +1,10 @@
 // pages/studyroom/index/index.js — 自习助手首页（教室查询）
 Page({
   data: {
-    buildings: ['教学楼A', '教学楼B', '教学楼C', '教学楼D', '图书馆'],
-    activeBuilding: '教学楼A',
-    timeSlots: ['08:00-10:00', '10:00-12:00', '14:00-16:00', '16:00-18:00', '19:00-21:00'],
-    activeTimeSlot: '08:00-10:00',
+    buildings: ['A栋', 'B栋', 'C栋', 'D栋', '图书馆'],
+    activeBuilding: 'A栋',
+    timeSlots: ['08:00-12:00', '14:00-18:00', '19:00-22:00'],
+    activeTimeSlot: '08:00-12:00',
     classrooms: [],
     loading: false,
     date: '',
@@ -20,6 +20,17 @@ Page({
     }, function () {
       this.loadClassrooms()
     })
+  },
+
+  onShow: function () {
+    this.loadClassrooms()
+  },
+
+  onPullDownRefresh: function () {
+    var that = this
+    that.loadClassrooms()
+      .then(function () { wx.stopPullDownRefresh() })
+      .catch(function () { wx.stopPullDownRefresh() })
   },
 
   // 格式化日期显示
@@ -59,23 +70,52 @@ Page({
     })
   },
 
-  // 加载教室列表
+  // 加载教室列表（含真实占用状态）
   loadClassrooms: function () {
     var that = this
     that.setData({ loading: true })
 
     var db = wx.cloud.database()
+    var _ = db.command
 
-    db.collection('classrooms')
+    return db.collection('classrooms')
       .where({ building: that.data.activeBuilding })
       .get()
       .then(function (res) {
-        var classrooms = res.data.map(function (room) {
-          return Object.assign({}, room, {
-            status: that.getRandomStatus()
+        var classrooms = res.data
+        if (classrooms.length === 0) {
+          that.setData({ classrooms: [], loading: false })
+          return
+        }
+
+        // 收集所有教室ID
+        var roomIds = classrooms.map(function (room) { return room._id })
+
+        // 查询当前日期时间段内有效的预约记录
+        return db.collection('reservations')
+          .where({
+            classroomId: _.in(roomIds),
+            date: that.data.date,
+            timeSlot: that.data.activeTimeSlot,
+            status: 'active'
           })
-        })
-        that.setData({ classrooms: classrooms, loading: false })
+          .get()
+          .then(function (reserveRes) {
+            // 构建被占用的教室ID集合
+            var occupiedIds = {}
+            reserveRes.data.forEach(function (r) {
+              occupiedIds[r.classroomId] = true
+            })
+
+            // 标记教室状态
+            var result = classrooms.map(function (room) {
+              return Object.assign({}, room, {
+                status: occupiedIds[room._id] ? 'occupied' : 'free'
+              })
+            })
+
+            that.setData({ classrooms: result, loading: false })
+          })
       })
       .catch(function (err) {
         console.warn('加载教室失败：', err)
@@ -84,16 +124,10 @@ Page({
       })
   },
 
-  // 模拟教室状态（实际应从预约记录中查询）
-  getRandomStatus: function () {
-    var statuses = ['空闲', '空闲', '空闲', '占用', '占用']
-    return statuses[Math.floor(Math.random() * statuses.length)]
-  },
-
   // 预约教室
   reserveClassroom: function (e) {
     var room = e.currentTarget.dataset.room
-    if (room.status === '占用') {
+    if (room.status === 'occupied') {
       wx.showToast({ title: '该教室已被占用', icon: 'none' })
       return
     }
@@ -115,21 +149,17 @@ Page({
     var that = this
     wx.showLoading({ title: '预约中...' })
 
-    var app = getApp()
-    app.ensureOpenid().then(function (openid) {
-      var db = wx.cloud.database()
-      return db.collection('reservations').add({
-        data: {
-          userId: openid,
-          classroomId: room._id,
-          building: room.building,
-          roomNo: room.roomNo,
-          date: that.data.date,
-          timeSlot: that.data.activeTimeSlot,
-          status: '已预约',
-          createTime: db.serverDate()
-        }
-      })
+    var db = wx.cloud.database()
+    db.collection('reservations').add({
+      data: {
+        classroomId: room._id,
+        building: room.building,
+        roomNo: room.roomNo,
+        date: that.data.date,
+        timeSlot: that.data.activeTimeSlot,
+        status: 'active',
+        createTime: db.serverDate()
+      }
     }).then(function () {
       wx.hideLoading()
       wx.showToast({ title: '预约成功' })

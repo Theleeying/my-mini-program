@@ -71,13 +71,13 @@
           mode="aspectFill"
         />
         <view wx:else class="item-thumb-placeholder">
-          <text>{{item.type === '失物' ? '🔍' : '📢'}}</text>
+          <text>{{item.type === 'lost' ? '🔍' : '📢'}}</text>
         </view>
         <view class="item-info flex-1">
           <view class="item-title-row">
             <text class="item-title">{{item.title}}</text>
-            <text class="item-type-tag {{item.type === '失物' ? 'tag-lost' : 'tag-found'}}">
-              {{item.type}}
+            <text class="item-type-tag {{item.type === 'lost' ? 'tag-lost' : 'tag-found'}}">
+              {{item.type === 'lost' ? '寻失物' : '招领'}}
             </text>
           </view>
           <text class="item-desc">{{item.description || ''}}</text>

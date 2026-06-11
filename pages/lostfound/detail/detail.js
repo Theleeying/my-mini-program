@@ -37,7 +37,7 @@ Page({
 
   // 拨打电话
   callPhone: function () {
-    var phone = this.data.detail.contactPhone
+    var phone = this.data.detail.contactInfo
     if (phone) {
       wx.makePhoneCall({ phoneNumber: phone })
     } else {
@@ -45,28 +45,26 @@ Page({
     }
   },
 
-  // 标记为已找到/已认领
+  // 标记为已解决
   markResolved: function () {
     var that = this
-    var type = this.data.detail.type
-    var statusText = type === '失物' ? '已找到' : '已认领'
 
     wx.showModal({
       title: '确认操作',
-      content: '确定标记为"' + statusText + '"吗？',
+      content: '确定标记为"已解决"吗？',
       success: function (res) {
         if (res.confirm) {
           wx.showLoading({ title: '处理中...' })
           var db = wx.cloud.database()
           db.collection('lost_found').doc(that.data.id)
             .update({
-              data: { status: statusText }
+              data: { status: 'resolved' }
             })
             .then(function () {
               wx.hideLoading()
               wx.showToast({ title: '操作成功' })
               that.setData({
-                'detail.status': statusText
+                'detail.status': 'resolved'
               })
             })
             .catch(function (err) {
