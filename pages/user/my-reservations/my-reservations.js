@@ -1,4 +1,4 @@
-// pages/user/my-reservations/my-reservations.js — 我的预约（自习室）
+// pages/user/my-reservations/my-reservations.js — 我的预约
 Page({
   data: {
     list: [],
