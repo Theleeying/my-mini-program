@@ -50,15 +50,10 @@
 
 /* ========== 排序下拉 ========== */
 .sort-menu {
-  position: absolute;
-  top: 176rpx;
-  right: 24rpx;
-  width: 280rpx;
+  width: 100%;
   background: var(--bg-white);
-  border-radius: 12rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.12);
-  z-index: 100;
-  overflow: hidden;
+  border-bottom: 1rpx solid var(--border);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
 }
 
 .sort-item {
@@ -93,8 +88,9 @@
 }
 
 .tab-item.active {
-  color: #fff;
-  background: var(--primary);
+  color: #07C160;
+  background: rgba(7, 193, 96, 0.1);
+  font-weight: 600;
 }
 
 /* ========== 瀑布流 ========== */
