@@ -21,8 +21,16 @@ Page({
   },
 
   onLoad: function () {
+    var that = this
     this.loadBanners()
     this.loadHotList()
+
+    // 绝对兜底：8秒后无论如何释放 loading
+    setTimeout(function () {
+      if (that.data.loading) {
+        that.setData({ loading: false })
+      }
+    }, 8000)
   },
 
   onShow: function () {
@@ -38,21 +46,71 @@ Page({
 
   // 加载轮播图
   loadBanners: function () {
-    var db = wx.cloud.database()
     var that = this
-    return db.collection('announcements')
+
+    // 防御1：cloud 未初始化
+    if (!wx.cloud || typeof wx.cloud.database !== 'function') {
+      that.setData({ banners: that.getLocalBanners() })
+      return Promise.resolve()
+    }
+
+    // 防御2：同步异常
+    var db
+    try {
+      db = wx.cloud.database()
+    } catch (e) {
+      that.setData({ banners: that.getLocalBanners() })
+      return Promise.resolve()
+    }
+
+    // 防御3：3秒超时保底
+    var timeout = new Promise(function (resolve) {
+      setTimeout(function () { resolve('timeout') }, 3000)
+    })
+
+    var query = db.collection('announcements')
       .orderBy('createTime', 'desc')
       .limit(5)
       .get()
-      .then(function (res) { that.setData({ banners: res.data }) })
-      .catch(function () { that.setData({ banners: [] }) })
+
+    return Promise.race([query, timeout])
+      .then(function (res) {
+        if (res === 'timeout' || !res.data || res.data.length === 0) {
+          that.setData({ banners: that.getLocalBanners() })
+        } else {
+          that.setData({ banners: res.data })
+        }
+      })
+      .catch(function () {
+        that.setData({ banners: that.getLocalBanners() })
+      })
+  },
+
+  getLocalBanners: function () {
+    return [
+      { _id: 'banner1', image: '/images/banner/banner1.jpg', title: '欢迎使用校易通' },
+      { _id: 'banner2', image: '/images/banner/banner2.jpg', title: '二手交易，物尽其用' },
+      { _id: 'banner3', image: '/images/banner/banner3.jpg', title: '失物招领，互帮互助' }
+    ]
   },
 
   // 加载热门推荐 + 收藏状态
   loadHotList: function () {
-    var db = wx.cloud.database()
     var that = this
     var app = getApp()
+
+    // 防御1：cloud 未初始化 / 同步异常
+    var db
+    if (!wx.cloud || typeof wx.cloud.database !== 'function') {
+      that.setData({ hotList: [], loading: false })
+      return Promise.resolve()
+    }
+    try {
+      db = wx.cloud.database()
+    } catch (e) {
+      that.setData({ hotList: [], loading: false })
+      return Promise.resolve()
+    }
 
     var goodsPromise = db.collection('goods')
       .where({ status: 'active' })
@@ -76,8 +134,20 @@ Page({
       return { data: [] }
     })
 
-    return Promise.all([goodsPromise, lostPromise, favPromise])
+    // 防御2：5秒超时保底
+    var timeout = new Promise(function (resolve) {
+      setTimeout(function () { resolve('__hot_timeout') }, 5000)
+    })
+
+    var query = Promise.all([goodsPromise, lostPromise, favPromise])
+
+    return Promise.race([query, timeout])
       .then(function (results) {
+        if (results === '__hot_timeout') {
+          that.setData({ hotList: [], loading: false })
+          return
+        }
+
         var goodsRes = results[0]
         var lostRes = results[1]
         var favRes = results[2]
@@ -87,14 +157,14 @@ Page({
           favSet[r.itemType + '_' + r.itemId] = true
         })
 
-        var goods = goodsRes.data.map(function (item) {
+        var goods = (goodsRes.data || []).map(function (item) {
           return Object.assign({}, item, {
             __type: 'goods',
             isFavorited: !!favSet['goods_' + item._id]
           })
         })
 
-        var lost = lostRes.data.map(function (item) {
+        var lost = (lostRes.data || []).map(function (item) {
           return Object.assign({}, item, {
             __type: 'lost_found',
             isFavorited: !!favSet['lost_found_' + item._id]
