@@ -161,14 +161,14 @@
   right: 40rpx;
   width: 100rpx;
   height: 100rpx;
-  background: var(--primary);
+  background: #07C160;
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #fff;
-  box-shadow: 0 4rpx 20rpx rgba(74, 144, 217, 0.4);
+  box-shadow: 0 4rpx 20rpx rgba(7, 193, 96, 0.4);
   z-index: 50;
 }
 
