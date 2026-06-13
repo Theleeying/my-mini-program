@@ -145,7 +145,7 @@
   flex: 1;
   height: 72rpx;
   line-height: 72rpx;
-  background: var(--primary);
+  background: #07C160;
   color: #fff;
   text-align: center;
   border-radius: 36rpx;
