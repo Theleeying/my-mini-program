@@ -1,7 +1,7 @@
 # 校易通 — 开发指南
 
-> 📅 更新日期：2026年5月31日
-> 👤 维护人：成员A
+> 📅 更新日期：2026年6月13日
+> 👤 维护人：黄宇超、李钊、潘晨曦
 
 ---
 
@@ -11,11 +11,11 @@
 
 | 模块 | 负责人 | 页面目录 |
 |------|--------|---------|
-| 首页/资讯 | 成员A | `pages/index/` |
-| 个人中心 | 成员A | `pages/user/` |
-| 二手交易 | 成员B | `pages/secondhand/` |
-| 失物招领 | 成员C | `pages/lostfound/` |
-| 自习助手 | 成员C | `pages/studyroom/` |
+| 首页/资讯 | 黄宇超 | `pages/index/` |
+| 个人中心 | 黄宇超 | `pages/user/` |
+| 二手交易 | 李钊 | `pages/secondhand/` |
+| 失物招领 | 潘晨曦 | `pages/lostfound/` |
+| 自习助手 | 潘晨曦 | `pages/studyroom/` |
 
 ---
 
@@ -64,8 +64,9 @@ announcements  公告/轮播图
 favorites      收藏记录
 goods          二手商品
 lost_found     失物招领
-classrooms     教室信息
+classrooms     教室信息（含 capacity 容量、reserved 基础预约数）
 reservations   自习预约
+comments       评论（预留）
 ```
 
 ### 3.3 各集合字段定义
@@ -154,7 +155,7 @@ db.collection('goods').doc('记录ID').remove().then(() => {
 
 ### 场景举例
 
-> 成员B 发现商品需要加一个「新旧程度」字段
+> 李钊 发现商品需要加一个「新旧程度」字段
 
 ### 步骤
 
@@ -176,7 +177,7 @@ db.collection('goods').add({
 
 | 为什么 | 说明 |
 |--------|------|
-| 首页热门推荐 | 成员A 的首页要展示商品信息，需要知道有哪些字段可以显示 |
+| 首页热门推荐 | 首页要展示商品信息，需要知道有哪些字段可以显示 |
 | 数据一致性 | 老数据没有这个字段，查询时要做兼容处理 |
 | 文档同步 | 需要更新数据库设计文档 |
 
@@ -195,7 +196,7 @@ db.collection('goods').add({
 
 ### 场景举例
 
-> 成员C 觉得需要加一个「教学楼」集合来单独管理楼栋信息
+> 潘晨曦 觉得需要加一个「教学楼」集合来单独管理楼栋信息
 
 ### 步骤
 
@@ -258,31 +259,36 @@ mini-program/
 ├── app.json            全局配置（路由、TabBar）
 ├── app.wxss            全局样式
 ├── cloudfunctions/     云函数
-│   └── login/          获取用户openid
+│   ├── login/          获取用户openid
+│   └── seedData/       示例数据初始化（教室、轮播图等）
 ├── docs/               文档
-│   ├── 成员A-任务分析文档.md
 │   └── 数据库设计文档.md
 ├── images/             静态图片资源
-│   └── tab/            TabBar图标（待添加）
+│   ├── default-goods.png 默认商品图
+│   ├── default-avatar.png 默认头像
+│   └── tab/            TabBar图标
 ├── pages/
-│   ├── index/          首页（成员A）
-│   ├── user/           个人中心（成员A）
-│   │   ├── index/        个人主页
+│   ├── index/          首页（轮播图、热门推荐、快捷入口）
+│   ├── user/           个人中心
+│   │   ├── index/        个人主页（登录、统计、菜单）
 │   │   ├── my-publish/   我的发布
-│   │   ├── my-favorites/ 我的收藏
+│   │   ├── my-favorites/ 我的收藏（支持二手/失物切换）
+│   │   ├── my-reservations/ 我的预约
 │   │   └── settings/     设置
 │   ├── common/
-│   │   └── about/        关于我们
-│   ├── secondhand/     二手交易（成员B）
-│   │   ├── list/         商品列表
-│   │   ├── detail/       商品详情
+│   │   ├── about/        关于我们（团队成员信息）
+│   │   ├── search-results/ 搜索结果
+│   │   └── announcement-detail/ 公告详情
+│   ├── secondhand/     二手交易
+│   │   ├── list/         商品列表（瀑布流、分类筛选、排序）
+│   │   ├── detail/       商品详情（收藏、联系卖家）
 │   │   └── publish/      发布商品
-│   ├── lostfound/      失物招领（成员C）
-│   │   ├── list/         信息列表
+│   ├── lostfound/      失物招领
+│   │   ├── list/         信息列表（寻失物/招领切换）
 │   │   ├── detail/       信息详情
 │   │   └── publish/      发布信息
-│   └── studyroom/      自习助手（成员C）
-│       ├── index/        教室查询
+│   └── studyroom/      自习助手
+│       ├── index/        教室查询（剩余座位数、按楼栋/时段筛选）
 │       └── reservations/ 预约记录
 ├── utils/              工具函数
 └── typings/            类型定义
@@ -319,6 +325,18 @@ mini-program/
 <view class="flex-row">横向排列</view>
 <view class="flex-between">两端对齐</view>
 ```
+
+---
+
+## 十、近期更新记录
+
+| 日期 | 内容 |
+|------|------|
+| 6月13日 | 修复收藏列表无法显示问题；教室预约改为剩余座位数模式；防重复预约；修复分类筛选不匹配；修复时间显示 [object Object]；二手成色显示中文 |
+| 6月12日 | 首页轮播图加载逻辑优化；分类栏样式调整；热门推荐加载稳定性提升 |
+| 6月10日 | 关于页面成员信息更新；个人中心图标样式优化 |
+| 6月8日 | 修复教室预约和失物招领模块数据不同步问题 |
+| 5月31日 | 项目初始搭建，云函数初始化，默认商品图生成 |
 
 ---
 
