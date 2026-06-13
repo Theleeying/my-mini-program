@@ -38,7 +38,7 @@ Page({
           if (ids.length === 0) {
             // 兜底：无 classroomId 时显示"未知教室"
             var list = res.data.map(function (item) {
-              return Object.assign({}, item, { roomName: '未知教室' })
+              return Object.assign({}, item, { roomName: '未知教室', createTimeText: that.formatTime(item.createTime) })
             })
             that.setData({ list: list, loading: false })
             return
@@ -59,7 +59,8 @@ Page({
               var list = res.data.map(function (item) {
                 var room = roomMap[item.classroomId]
                 return Object.assign({}, item, {
-                  roomName: room ? room.building + ' ' + room.roomNo : '未知教室'
+                  roomName: room ? room.building + ' ' + room.roomNo : '未知教室',
+                  createTimeText: that.formatTime(item.createTime)
                 })
               })
 
@@ -103,5 +104,18 @@ Page({
   onPullDownRefresh: function () {
     this.loadReservations()
     wx.stopPullDownRefresh()
+  },
+
+  formatTime: function (date) {
+    if (!date) return ''
+    if (typeof date === 'string') return date.slice(0, 16)
+    var d = new Date(date)
+    if (isNaN(d.getTime())) return ''
+    var y = d.getFullYear()
+    var m = ('0' + (d.getMonth() + 1)).slice(-2)
+    var day = ('0' + d.getDate()).slice(-2)
+    var h = ('0' + d.getHours()).slice(-2)
+    var min = ('0' + d.getMinutes()).slice(-2)
+    return y + '-' + m + '-' + day + ' ' + h + ':' + min
   }
 })

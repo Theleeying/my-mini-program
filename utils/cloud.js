@@ -103,11 +103,14 @@ function updateGoods(goodsId, data) {
 
 /**
  * 添加收藏
+ * @param {string} itemId - 物品ID
+ * @param {string} itemType - 物品类型 'goods' | 'lost_found'
  */
-function addFavorite(goodsId) {
+function addFavorite(itemId, itemType) {
   return db.collection(COLLECTIONS.FAVORITES).add({
     data: {
-      goodsId: goodsId,
+      itemId: itemId,
+      itemType: itemType,
       createTime: db.serverDate()
     }
   });
@@ -122,11 +125,13 @@ function removeFavorite(favoriteId) {
 
 /**
  * 检查是否已收藏
- * @param {string} goodsId
+ * @param {string} itemId - 物品ID
+ * @param {string} itemType - 物品类型 'goods' | 'lost_found'
  */
-function checkFavorite(goodsId) {
+function checkFavorite(itemId, itemType) {
   return db.collection(COLLECTIONS.FAVORITES).where({
-    goodsId: goodsId,
+    itemId: itemId,
+    itemType: itemType,
     _openid: '{openid}'
   }).get();
 }

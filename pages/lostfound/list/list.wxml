@@ -83,7 +83,7 @@
           <text class="item-desc">{{item.description || ''}}</text>
           <view class="item-meta">
             <text class="item-category">{{item.category || '其他'}}</text>
-            <text class="item-time">{{item.createTime || ''}}</text>
+            <text class="item-time">{{item.createTimeText || ''}}</text>
           </view>
         </view>
       </view>

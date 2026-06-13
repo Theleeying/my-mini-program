@@ -45,7 +45,7 @@
             <text class="publish-status {{item.status === 'active' ? 'status-active' : 'status-done'}}">
               {{activeTab === 0 ? (item.status === 'sold' ? '已售出' : '在售') : (item.status === 'resolved' ? '已认领/已找到' : '进行中')}}
             </text>
-            <text class="publish-time" wx:if="{{item.createTime}}">{{item.createTime}}</text>
+            <text class="publish-time" wx:if="{{item.createTimeText}}">{{item.createTimeText}}</text>
           </view>
         </view>
         <text class="arrow">›</text>
