@@ -5,7 +5,7 @@
   <view class="date-section card">
     <view class="date-row">
       <text class="date-label">选择日期</text>
-      <picker mode="date" value="{{date}}" bindchange="onDateChange">
+      <picker mode="date" value="{{date}}" start="{{date}}" bindchange="onDateChange">
         <view class="date-picker">
           <text class="date-text">{{dateStr}}</text>
           <text class="date-arrow">▼</text>

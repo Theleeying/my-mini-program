@@ -70,7 +70,7 @@ Page({
     })
   },
 
-  // 加载教室列表（含真实占用状态）
+  // 加载教室列表（显示所有教室，标记空闲/占用状态）
   loadClassrooms: function () {
     var that = this
     that.setData({ loading: true })
@@ -107,10 +107,12 @@ Page({
               occupiedIds[r.classroomId] = true
             })
 
-            // 标记教室状态
+            // 标记教室状态（空闲/占用），所有教室都显示
+            // 判断依据：教室自身 status 为 occupied 或 该时段有预约记录 → 标记为占用
             var result = classrooms.map(function (room) {
+              var isOccupied = room.status === 'occupied' || occupiedIds[room._id]
               return Object.assign({}, room, {
-                status: occupiedIds[room._id] ? 'occupied' : 'free'
+                status: isOccupied ? 'occupied' : 'free'
               })
             })
 
