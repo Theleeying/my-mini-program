@@ -19,16 +19,16 @@ Page({
 
   loadFavorites: function () {
     var db = wx.cloud.database()
-    var itemType = this.data.activeTab === 0 ? 'goods' : 'lost_found'
+    var _ = db.command
+    var activeTab = this.data.activeTab
     var that = this
     var app = getApp()
 
     that.setData({ loading: true })
 
-    // 先确保有 openid，再按 _openid 范围查询当前用户的收藏
     app.ensureOpenid().then(function (openid) {
       return db.collection('favorites')
-        .where({ itemType: itemType, _openid: openid })
+        .where({ _openid: openid })
         .orderBy('createTime', 'desc')
         .get()
     }).then(function (res) {
@@ -37,15 +37,27 @@ Page({
         return
       }
 
-      var idMap = {}
+      // 兼容旧数据：统一映射为 itemId + itemType
+      // 旧格式 { goodsId } → 视为 goods 类型
+      // 新格式 { itemId, itemType } → 直接使用
+      var itemType = activeTab === 0 ? 'goods' : 'lost_found'
+      var ids = []
       res.data.forEach(function (r) {
-        idMap[r.itemId] = true
+        var type = r.itemType || (r.goodsId ? 'goods' : '')
+        var id = r.itemId || r.goodsId
+        if (type === itemType && id) {
+          ids.push(id)
+        }
       })
-      var ids = Object.keys(idMap)
-      var collectionName = itemType === 'goods' ? 'goods' : 'lost_found'
 
+      if (ids.length === 0) {
+        that.setData({ list: [], loading: false })
+        return
+      }
+
+      var collectionName = itemType === 'goods' ? 'goods' : 'lost_found'
       return db.collection(collectionName)
-        .where({ _id: db.command.in(ids) })
+        .where({ _id: _.in(ids) })
         .get()
         .then(function (detailRes) {
           that.setData({ list: detailRes.data, loading: false })
@@ -69,10 +81,15 @@ Page({
         if (!res.confirm) return
 
         var db = wx.cloud.database()
+        var _ = db.command
         // 必须带上 _openid，避免误删其他用户的收藏记录
+        // 兼容旧数据：同时匹配 itemId 和 goodsId 字段
         app.ensureOpenid().then(function (openid) {
           return db.collection('favorites')
-            .where({ itemId: id, itemType: itemType, _openid: openid })
+            .where(_.or([
+              { itemId: id, itemType: itemType, _openid: openid },
+              { goodsId: id, _openid: openid }
+            ]))
             .remove()
         }).then(function () {
           wx.showToast({ title: '已取消收藏', icon: 'success' })

@@ -67,7 +67,7 @@ Page({
   // 检查是否已收藏
   async checkFavorite() {
     try {
-      const res = await cloud.checkFavorite(this.data.goodsId);
+      const res = await cloud.checkFavorite(this.data.goodsId, 'goods');
       if (res.data.length > 0) {
         this.setData({
           isFavorite: true,
@@ -108,7 +108,7 @@ Page({
     } else {
       // 添加收藏
       try {
-        const res = await cloud.addFavorite(this.data.goodsId);
+        const res = await cloud.addFavorite(this.data.goodsId, 'goods');
         this.setData({
           isFavorite: true,
           favoriteId: res._id

@@ -73,11 +73,12 @@
       >
         <view class="room-info">
           <text class="room-no">{{item.roomNo}}</text>
-          <text class="room-capacity">容量：{{item.capacity || '未知'}}人</text>
+          <text class="room-capacity">总座位：{{item.capacity || 40}}</text>
         </view>
         <view class="room-status {{item.status === 'free' ? 'free' : 'busy'}}">
           <text class="status-dot"></text>
-          <text class="status-text">{{item.status === 'free' ? '空闲' : '占用'}}</text>
+          <text class="status-text" wx:if="{{item.status === 'free'}}">剩余 {{item.remaining}} 个座位</text>
+          <text class="status-text" wx:else>已满</text>
         </view>
       </view>
 

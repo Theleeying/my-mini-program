@@ -11,8 +11,8 @@ Page({
     title: '',
     category: '',
     categoryIndex: -1,
-    categories: ['教材书籍', '数码产品', '生活用品', '运动器材', '其他'],
-    categoryKeys: ['book', 'digital', 'life', 'sports', 'other'],
+    categories: ['书籍', '电子产品', '生活用品', '服饰', '运动器材', '其他'],
+    categoryKeys: ['书籍', '电子产品', '生活用品', '服饰', '运动器材', '其他'],
 
     price: '',
     condition: '',

@@ -32,7 +32,11 @@ Page({
         .orderBy('createTime', 'desc')
         .get()
         .then(function (res) {
-          that.setData({ list: res.data, loading: false })
+          var list = res.data.map(function (item) {
+            item.createTimeText = that.formatTime(item.createTime)
+            return item
+          })
+          that.setData({ list: list, loading: false })
         })
         .catch(function (err) {
           console.error('加载发布记录失败：', err)
@@ -57,5 +61,22 @@ Page({
   onPullDownRefresh: function () {
     this.loadData()
     wx.stopPullDownRefresh()
+  },
+
+  formatTime: function (date) {
+    if (!date) return ''
+    if (typeof date === 'string') return date.slice(0, 10)
+    var d = new Date(date)
+    if (isNaN(d.getTime())) return ''
+    var now = new Date()
+    var diff = now - d
+    if (diff < 60000) return '刚刚'
+    if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前'
+    if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前'
+    if (diff < 2592000000) return Math.floor(diff / 86400000) + '天前'
+    var y = d.getFullYear()
+    var m = ('0' + (d.getMonth() + 1)).slice(-2)
+    var day = ('0' + d.getDate()).slice(-2)
+    return y + '-' + m + '-' + day
   }
 })

@@ -6,11 +6,12 @@ Page({
     // 分类选项
     categories: [
       { key: '', name: '全部' },
-      { key: 'book', name: '教材书籍' },
-      { key: 'digital', name: '数码产品' },
-      { key: 'life', name: '生活用品' },
-      { key: 'sports', name: '运动器材' },
-      { key: 'other', name: '其他' }
+      { key: '书籍', name: '书籍' },
+      { key: '电子产品', name: '电子产品' },
+      { key: '生活用品', name: '生活用品' },
+      { key: '服饰', name: '服饰' },
+      { key: '运动器材', name: '运动器材' },
+      { key: '其他', name: '其他' }
     ],
     activeCategory: '',
 

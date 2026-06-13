@@ -38,7 +38,7 @@
       </view>
 
       <view class="res-footer" wx:if="{{item.status === 'active'}}">
-        <text class="res-time">预约时间：{{item.createTime}}</text>
+        <text class="res-time">预约时间：{{item.createTimeText}}</text>
         <view class="btn-cancel" data-id="{{item._id}}" catchtap="onCancel">取消预约</view>
       </view>
       <view class="res-footer" wx:else>

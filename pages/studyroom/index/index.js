@@ -73,7 +73,7 @@ Page({
   // 加载教室列表（显示所有教室，标记空闲/占用状态）
   loadClassrooms: function () {
     var that = this
-    that.setData({ loading: true })
+    that.setData({ classrooms: [], loading: true })
 
     var db = wx.cloud.database()
     var _ = db.command
@@ -101,18 +101,23 @@ Page({
           })
           .get()
           .then(function (reserveRes) {
-            // 构建被占用的教室ID集合
-            var occupiedIds = {}
+            // 统计每个教室该时段的真实用户预约数（过滤假数据）
+            var reserveCount = {}
             reserveRes.data.forEach(function (r) {
-              occupiedIds[r.classroomId] = true
+              if (r._openid && r._openid.indexOf('__system__') === 0) return
+              reserveCount[r.classroomId] = (reserveCount[r.classroomId] || 0) + 1
             })
 
-            // 标记教室状态（空闲/占用），所有教室都显示
-            // 判断依据：教室自身 status 为 occupied 或 该时段有预约记录 → 标记为占用
+            // 计算剩余座位 = 总容量 - 教室基础预约数 - 用户实际预约数
             var result = classrooms.map(function (room) {
-              var isOccupied = room.status === 'occupied' || occupiedIds[room._id]
+              var capacity = room.capacity || 40
+              var baseReserved = room.reserved || 0
+              var userReserved = reserveCount[room._id] || 0
+              var remaining = capacity - baseReserved - userReserved
               return Object.assign({}, room, {
-                status: isOccupied ? 'occupied' : 'free'
+                capacity: capacity,
+                remaining: remaining,
+                status: remaining > 0 ? 'free' : 'full'
               })
             })
 
@@ -129,8 +134,8 @@ Page({
   // 预约教室
   reserveClassroom: function (e) {
     var room = e.currentTarget.dataset.room
-    if (room.status === 'occupied') {
-      wx.showToast({ title: '该教室已被占用', icon: 'none' })
+    if (room.remaining <= 0) {
+      wx.showToast({ title: '该教室该时段已满', icon: 'none' })
       return
     }
 
@@ -149,26 +154,49 @@ Page({
   // 执行预约
   doReserve: function (room) {
     var that = this
+    var app = getApp()
     wx.showLoading({ title: '预约中...' })
 
-    var db = wx.cloud.database()
-    db.collection('reservations').add({
-      data: {
-        classroomId: room._id,
-        building: room.building,
-        roomNo: room.roomNo,
-        date: that.data.date,
-        timeSlot: that.data.activeTimeSlot,
-        status: 'active',
-        createTime: db.serverDate()
-      }
-    }).then(function () {
-      wx.hideLoading()
-      wx.showToast({ title: '预约成功' })
-      that.loadClassrooms()
+    app.ensureOpenid().then(function (openid) {
+      var db = wx.cloud.database()
+
+      // 先检查是否已预约过该教室该时段
+      return db.collection('reservations')
+        .where({
+          classroomId: room._id,
+          date: that.data.date,
+          timeSlot: that.data.activeTimeSlot,
+          status: 'active',
+          _openid: openid
+        })
+        .count()
+        .then(function (countRes) {
+          if (countRes.total > 0) {
+            wx.hideLoading()
+            wx.showToast({ title: '你已经预约过该时段', icon: 'none' })
+            return
+          }
+
+          // 未重复，执行预约
+          return db.collection('reservations').add({
+            data: {
+              classroomId: room._id,
+              building: room.building,
+              roomNo: room.roomNo,
+              date: that.data.date,
+              timeSlot: that.data.activeTimeSlot,
+              status: 'active',
+              createTime: db.serverDate()
+            }
+          }).then(function () {
+            wx.hideLoading()
+            wx.showToast({ title: '预约成功' })
+            that.loadClassrooms()
+          })
+        })
     }).catch(function (err) {
-      console.error('预约失败：', err)
       wx.hideLoading()
+      console.error('预约失败：', err)
       wx.showToast({ title: '预约失败', icon: 'none' })
     })
   },
