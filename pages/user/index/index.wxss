@@ -141,12 +141,16 @@
 .menu-icon {
   font-size: 40rpx;
   margin-right: 20rpx;
+  width: 48rpx;
+  text-align: center;
+  line-height: 1;
 }
 
 .menu-title {
   flex: 1;
   font-size: 30rpx;
   color: var(--color-text);
+  line-height: 1;
 }
 
 .menu-item .arrow {
